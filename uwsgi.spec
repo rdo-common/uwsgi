@@ -135,7 +135,7 @@ Patch3:         uwsgi_fix_lua.patch
 Patch5:         uwsgi_fix_mongodb.patch
 Patch6:         uwsgi_v8-314_compatibility.patch
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
-BuildRequires:  libyaml-devel, perl-devel, ruby-devel, perl-ExtUtils-Embed
+BuildRequires:  libyaml-devel, ruby-devel
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 %endif
@@ -160,6 +160,7 @@ BuildRequires:  GeoIP-devel, libevent-devel, zlib-devel
 BuildRequires:  openldap-devel, boost-devel
 BuildRequires:  libattr-devel, libxslt-devel
 %if %{with perl}
+BuildRequires:  perl-devel, perl-ExtUtils-Embed
 BuildRequires:  perl-Coro
 %endif
 %if %{with zeromq}
@@ -513,6 +514,14 @@ Requires: %{name}-plugin-common = %{version}-%{release}
 This package contains the Carbon plugin for uWSGI (to use in graphite)
 
 %if %{with perl}
+%package -n %{name}-plugin-psgi
+Summary:  uWSGI - Plugin for PSGI support
+Group:    System Environment/Daemons
+Requires: perl-PSGI, %{name}-plugin-common = %{version}-%{release}
+
+%description -n %{name}-plugin-psgi
+This package contains the PSGI plugin for uWSGI
+
 %package -n %{name}-plugin-coroae
 Summary:  uWSGI - Plugin for PERL Coro support
 Group:    System Environment/Daemons
@@ -701,16 +710,6 @@ Requires: %{name}-plugin-common = %{version}-%{release}
 
 %description -n %{name}-plugin-php
 This package contains the PHP plugin for uWSGI
-
-%if %{with perl}
-%package -n %{name}-plugin-psgi
-Summary:  uWSGI - Plugin for PSGI support
-Group:    System Environment/Daemons
-Requires: perl-PSGI, %{name}-plugin-common = %{version}-%{release}
-
-%description -n %{name}-plugin-psgi
-This package contains the PSGI plugin for uWSGI
-%endif
 
 %package -n %{name}-plugin-pty
 Summary:  uWSGI - Plugin for PTY support
@@ -1428,6 +1427,9 @@ fi
 %{_libdir}/%{name}/carbon_plugin.so
 
 %if %{with perl}
+%files -n %{name}-plugin-psgi
+%{_libdir}/%{name}/psgi_plugin.so
+
 %files -n %{name}-plugin-coroae
 %{_libdir}/%{name}/coroae_plugin.so
 %endif
@@ -1513,11 +1515,6 @@ fi
 
 %files -n %{name}-plugin-php
 %{_libdir}/%{name}/php_plugin.so
-
-%if %{with perl}
-%files -n %{name}-plugin-psgi
-%{_libdir}/%{name}/psgi_plugin.so
-%endif
 
 %files -n %{name}-plugin-pty
 %{_libdir}/%{name}/pty_plugin.so
