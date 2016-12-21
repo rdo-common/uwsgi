@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1670,6 +1670,9 @@ fi
 
 
 %changelog
+* Tue Dec 20 2016 Carl George <carl.george@rackspace.com> - 2.0.14-3
+- Enable plugin-psgi on EL7
+
 * Wed Nov 30 2016 Carl George <carl.george@rackspace.com> - 2.0.14-2
 - uwsgi is not yet OpenSSL 1.1 compatible, build against compat-openssl10 on F26+ (Carl George)
 - php plugin requires krb5 headers to build (Carl George)
