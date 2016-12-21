@@ -69,7 +69,8 @@
 %bcond_with tornado3
 # el6 ships with ruby 1.8 but fiberloop/rbthreads needs 1.9
 %bcond_with ruby19
-# el7 doesn't have perl-PSGI
+# el6 doesn't have perl-PSGI
+# el6 does have perl-Coro
 %bcond_with perl
 # this fails in el not sure why
 %bcond_with gridfs
@@ -95,8 +96,9 @@
 %bcond_with zeromq
 # el7 doesn't have greenlet
 %bcond_with greenlet
+# el7 does have perl-PSGI
 # el7 doesn't have perl-Coro
-%bcond_with perl
+%bcond_without perl
 # el7 can now build glusterfs but only on x86_64
 %ifnarch x86_64
 %bcond_with glusterfs
@@ -161,7 +163,9 @@ BuildRequires:  openldap-devel, boost-devel
 BuildRequires:  libattr-devel, libxslt-devel
 %if %{with perl}
 BuildRequires:  perl-devel, perl-ExtUtils-Embed
+%if 0%{?fedora} >= 15
 BuildRequires:  perl-Coro
+%endif
 %endif
 %if %{with zeromq}
 BuildRequires:  zeromq-devel
@@ -522,6 +526,7 @@ Requires: perl-PSGI, %{name}-plugin-common = %{version}-%{release}
 %description -n %{name}-plugin-psgi
 This package contains the PSGI plugin for uWSGI
 
+%if 0%{?fedora} >= 15
 %package -n %{name}-plugin-coroae
 Summary:  uWSGI - Plugin for PERL Coro support
 Group:    System Environment/Daemons
@@ -529,6 +534,7 @@ Requires: %{name}-plugin-common = %{version}-%{release}, %{name}-plugin-psgi = %
 
 %description -n %{name}-plugin-coroae
 This package contains the coroae plugin for uWSGI
+%endif
 %endif
 
 %package -n %{name}-plugin-cplusplus
@@ -1149,8 +1155,10 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/tuntap fedora
 %endif
 %if %{with perl}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/coroae fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/psgi fedora
+%if 0%{?fedora} >= 15
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/coroae fedora
+%endif
 %endif
 %if %{with zeromq}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/logzmq fedora
@@ -1430,8 +1438,10 @@ fi
 %files -n %{name}-plugin-psgi
 %{_libdir}/%{name}/psgi_plugin.so
 
+%if 0%{?fedora} >= 15
 %files -n %{name}-plugin-coroae
 %{_libdir}/%{name}/coroae_plugin.so
+%endif
 %endif
 
 %files -n %{name}-plugin-cplusplus
