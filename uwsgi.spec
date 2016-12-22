@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1670,6 +1670,9 @@ fi
 
 
 %changelog
+* Thu Dec 22 2016 Miro Hrončok <mhroncok@redhat.com> - 2.0.14-4
+- Rebuild for Python 3.6
+
 * Tue Dec 20 2016 Carl George <carl.george@rackspace.com> - 2.0.14-3
 - Enable plugin-psgi on EL7
 
