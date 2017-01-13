@@ -537,6 +537,14 @@ This package contains the coroae plugin for uWSGI
 %endif
 %endif
 
+%package -n %{name}-plugin-cheaper-busyness
+Summary:  uWSGI - Plugin for Cheaper Busyness algos
+Group:    System Environment/Daemons
+Requires: %{name}-plugin-common = %{version}-%{release}
+
+%description -n %{name}-plugin-cheaper-busyness
+This package contains the cheaper_busyness plugin for uWSGI
+
 %package -n %{name}-plugin-cplusplus
 Summary:  uWSGI - Plugin for C++ support
 Group:    System Environment/Daemons
@@ -1443,6 +1451,9 @@ fi
 %{_libdir}/%{name}/coroae_plugin.so
 %endif
 %endif
+
+%files -n %{name}-plugin-cheaper-busyness
+%{_libdir}/%{name}/cheaper_busyness_plugin.so
 
 %files -n %{name}-plugin-cplusplus
 %{_libdir}/%{name}/cplusplus_plugin.so
