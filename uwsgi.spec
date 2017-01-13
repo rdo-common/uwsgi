@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1681,6 +1681,10 @@ fi
 
 
 %changelog
+* Fri Jan 13 2017 Jorge A Gallegos <kad@blegh.net> - 2.0.14-6
+- Adding the cheaper_busyness plugin (Jorge Gallegos)
+- Got tired of this giant string (Jorge Gallegos)
+
 * Fri Jan 13 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.0.14-5
 - F-26: rebuild for ruby24
 
