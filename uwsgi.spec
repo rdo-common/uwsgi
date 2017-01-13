@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1670,6 +1670,9 @@ fi
 
 
 %changelog
+* Fri Jan 13 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.0.14-5
+- F-26: rebuild for ruby24
+
 * Thu Dec 22 2016 Miro Hrončok <mhroncok@redhat.com> - 2.0.14-4
 - Rebuild for Python 3.6
 
