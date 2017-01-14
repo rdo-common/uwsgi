@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -155,6 +155,13 @@ BuildRequires:  compat-openssl10-devel
 BuildRequires:  openssl-devel
 %endif
 BuildRequires:  bzip2-devel, gmp-devel, pam-devel
+%ifarch %arm
+# FIXME: explicitly specify java package not to use
+# java-1.8.0-openjdk-aarch32, which provides client/libjvm.so
+# but not server/libjvm.so, which uwsgi requires
+BuildRequires:  java-1.8.0-openjdk-headless
+BuildRequires:	java-1.8.0-openjdk-devel
+%endif
 BuildRequires:  java-devel, sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, tcp_wrappers-devel, libcurl-devel
 BuildRequires:  gloox-devel, libstdc++-devel
@@ -1681,6 +1688,11 @@ fi
 
 
 %changelog
+* Sun Jan 15 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.0.14-7
+- Workaround for build issue on arm(32): explicitly write 
+  java-1.8.0-openjdk-headless as BR not to use java-1.8.0-openjdk-aarch32
+  which does not provide server/libjvm.so
+
 * Fri Jan 13 2017 Jorge A Gallegos <kad@blegh.net> - 2.0.14-6
 - Adding the cheaper_busyness plugin (Jorge Gallegos)
 - Got tired of this giant string (Jorge Gallegos)
