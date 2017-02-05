@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1688,6 +1688,9 @@ fi
 
 
 %changelog
+* Sun Feb 05 2017 Kalev Lember <klember@redhat.com> - 2.0.14-8
+- Rebuilt for libgo soname bump
+
 * Sun Jan 15 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.0.14-7
 - Workaround for build issue on arm(32): explicitly write 
   java-1.8.0-openjdk-headless as BR not to use java-1.8.0-openjdk-aarch32
