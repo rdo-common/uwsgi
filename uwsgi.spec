@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1688,6 +1688,9 @@ fi
 
 
 %changelog
+* Wed Feb 08 2017 Carl George <carl.george@rackspace.com> - 2.0.14-9
+- Rebuild for boost soname bump
+
 * Sun Feb 05 2017 Kalev Lember <klember@redhat.com> - 2.0.14-8
 - Rebuilt for libgo soname bump
 
