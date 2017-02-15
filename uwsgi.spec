@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1688,6 +1688,9 @@ fi
 
 
 %changelog
+* Wed Feb 15 2017 Igor Gnatenko <ignatenko@redhat.com> - 2.0.14-10
+- Rebuild for brp-python-bytecompile
+
 * Wed Feb 08 2017 Carl George <carl.george@rackspace.com> - 2.0.14-9
 - Rebuild for boost soname bump
 
