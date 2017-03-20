@@ -216,6 +216,7 @@ Requires(preun): initscripts
 
 %filter_requires_in %{_usrsrc}
 %filter_provides_in %{_usrsrc}
+%filter_provides_in %{_libdir}/uwsgi/.*\.so$
 %filter_setup
 
 %description
@@ -1693,6 +1694,7 @@ fi
 
 %changelog
 - Add patch7 to add glib-2.0 pkg-config flags to mono build
+- Filter uwgi plugins from automatic provides rhbz#1352089
 
 * Wed Feb 15 2017 Igor Gnatenko <ignatenko@redhat.com> - 2.0.14-10
 - Rebuild for brp-python-bytecompile
