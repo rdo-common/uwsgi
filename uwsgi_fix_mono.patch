@@ -1,0 +1,15 @@
+diff -Naurp a/plugins/mono/uwsgiplugin.py b/plugins/mono/uwsgiplugin.py
+--- a/plugins/mono/uwsgiplugin.py	2016-10-03 03:16:59.000000000 -0500
++++ b/plugins/mono/uwsgiplugin.py	2017-03-20 16:18:54.917935286 -0500
+@@ -1,9 +1,9 @@
+ import os
+ NAME='mono'
+ 
+-CFLAGS = os.popen('pkg-config --cflags mono-2').read().rstrip().split()
++CFLAGS = os.popen('pkg-config --cflags mono-2 glib-2.0').read().rstrip().split()
+ LDFLAGS = []
+-LIBS = os.popen('pkg-config --libs mono-2').read().rstrip().split() 
++LIBS = os.popen('pkg-config --libs mono-2 glib-2.0').read().rstrip().split()
+ GCC_LIST = ['mono_plugin']
+ 
+ if os.uname()[0] == 'Darwin':

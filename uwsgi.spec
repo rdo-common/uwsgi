@@ -136,6 +136,7 @@ Patch3:         uwsgi_fix_lua.patch
 # https://github.com/unbit/uwsgi/issues/882
 Patch5:         uwsgi_fix_mongodb.patch
 Patch6:         uwsgi_v8-314_compatibility.patch
+Patch7:         uwsgi_fix_mono.patch
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
 BuildRequires:  libyaml-devel, ruby-devel
 %if %{with python3}
@@ -184,7 +185,7 @@ BuildRequires:  libgo-devel, gcc-go
 BuildRequires:  systemd-devel, systemd-units
 %endif
 %if %{with mono}
-BuildRequires:  mono-devel, mono-web
+BuildRequires:  mono-devel, mono-web, glib2-devel
 %endif
 %if %{with v8}
 %if 0%{?fedora} >= 25
@@ -1121,6 +1122,9 @@ echo "plugin_dir = %{_libdir}/%{name}" >> buildconf/$(basename %{SOURCE1})
 %if %{with v8} && 0%{?fedora} >= 25
 %patch6 -p1
 %endif
+%if %{with mono}
+%patch7 -p1
+%endif
 
 #disable plug-ins
 %if %{without mongodblibs}
@@ -1688,6 +1692,8 @@ fi
 
 
 %changelog
+- Add patch7 to add glib-2.0 pkg-config flags to mono build
+
 * Wed Feb 15 2017 Igor Gnatenko <ignatenko@redhat.com> - 2.0.14-10
 - Rebuild for brp-python-bytecompile
 
