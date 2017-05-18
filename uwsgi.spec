@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        0%{?dist}
+Release:        1%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1693,6 +1693,10 @@ fi
 
 
 %changelog
+* Thu May 18 2017 Jorge A Gallegos <kad@blegh.net> - 2.0.15-1
+- Bumping release to 2.0.15 (Jorge Gallegos)
+- Updating sources to 2.0.15 (Jorge Gallegos)
+
 * Mon Mar 20 2017 Carl George <carl.george@rackspace.com> - 2.0.14-11
 - Add patch7 to add glib-2.0 pkg-config flags to mono build
 - Filter uwgi plugins from automatic provides rhbz#1352089
