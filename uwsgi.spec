@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1693,6 +1693,9 @@ fi
 
 
 %changelog
+* Sun Jun 04 2017 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.15-2
+- Perl 5.26 rebuild
+
 * Thu May 18 2017 Jorge A Gallegos <kad@blegh.net> - 2.0.15-1
 - Bumping release to 2.0.15 (Jorge Gallegos)
 - Updating sources to 2.0.15 (Jorge Gallegos)
