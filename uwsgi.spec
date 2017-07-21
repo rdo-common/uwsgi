@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1693,6 +1693,9 @@ fi
 
 
 %changelog
+* Fri Jul 21 2017 Kalev Lember <klember@redhat.com> - 2.0.15-4
+- Rebuilt for Boost 1.64
+
 * Fri Jul 07 2017 Igor Gnatenko <ignatenko@redhat.com> - 2.0.15-3
 - Rebuild due to bug in RPM (RHBZ #1468476)
 
