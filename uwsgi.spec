@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1693,6 +1693,9 @@ fi
 
 
 %changelog
+* Sat Jan 20 2018 Björn Esser <besser82@fedoraproject.org> - 2.0.15-8
+- Rebuilt for switch to libxcrypt
+
 * Tue Oct 03 2017 Remi Collet <remi@fedoraproject.org> - 2.0.15-7
 - rebuild for https://fedoraproject.org/wiki/Changes/php72
 
