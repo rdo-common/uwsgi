@@ -1,14 +1,14 @@
 # Version
 %global majornumber 2
 %global minornumber 0
-%global releasenumber 15
+%global releasenumber 16
 
 # Documentation sources:
-%global commit 1610d37413b3e9dd7aea9fcdd711d602ae909d25
+%global commit eb4ad986cba70ed4acc44699e80965c1175aa323
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global docrepo uwsgi-docs
 %{!?_httpd_apxs: %{expand: %%global _httpd_apxs %%{_sbindir}/apxs}}
-%{!?_httpd_moddir:    %{expand: %%global _httpd_moddir    %%{_libdir}/httpd/modules}}
+%{!?_httpd_moddir: %{expand: %%global _httpd_moddir %%{_libdir}/httpd/modules}}
 
 # This is primarily built for fedora, make it easy right now
 %if 0%{?fedora}
@@ -117,7 +117,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        9%{?dist}
+Release:        0%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -161,7 +161,7 @@ BuildRequires:  bzip2-devel, gmp-devel, pam-devel
 # java-1.8.0-openjdk-aarch32, which provides client/libjvm.so
 # but not server/libjvm.so, which uwsgi requires
 BuildRequires:  java-1.8.0-openjdk-headless
-BuildRequires:	java-1.8.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk-devel
 %endif
 BuildRequires:  java-devel, sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, tcp_wrappers-devel, libcurl-devel
