@@ -115,6 +115,13 @@
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 %endif
 
+# Disable router_access in fedora >= 28 because tcp_wrappers deprecation
+%if 0%{?fedora} >= 28
+%bcond_with tcp_wrappers
+%else
+%bcond_without tcp_wrappers
+%endif
+
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
 Release:        0%{?dist}
@@ -139,6 +146,9 @@ Patch6:         uwsgi_v8-314_compatibility.patch
 Patch7:         uwsgi_fix_mono.patch
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
 BuildRequires:  libyaml-devel, ruby-devel
+%if %{with tcp_wrappers}
+BuildRequires:  tcp_wrappers-devel
+%endif
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 %endif
@@ -164,7 +174,7 @@ BuildRequires:  java-1.8.0-openjdk-headless
 BuildRequires:  java-1.8.0-openjdk-devel
 %endif
 BuildRequires:  java-devel, sqlite-devel, libcap-devel
-BuildRequires:  httpd-devel, tcp_wrappers-devel, libcurl-devel
+BuildRequires:  httpd-devel, libcurl-devel
 BuildRequires:  gloox-devel, libstdc++-devel
 BuildRequires:  GeoIP-devel, libevent-devel, zlib-devel
 BuildRequires:  openldap-devel, boost-devel
@@ -196,6 +206,11 @@ BuildRequires:  v8-devel
 %endif
 %if %{with mongodblibs}
 BuildRequires:  libmongodb-devel
+%endif
+
+%if 0%{?fedora} >= 28
+BuildRequires:  libargon2-devel
+Obsoletes:      %{name}-router-access <= 2.0.16
 %endif
 
 Obsoletes:      %{name}-loggers <= 1.9.8-1
@@ -1197,6 +1212,9 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/jvm fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/jwsgi fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/ring fedora
+%endif
+%if %{with tcp_wrappers}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/router_access fedora
 %endif
 %{_httpd_apxs} -Wc,-Wall -Wl -c apache2/mod_proxy_uwsgi.c
 
