@@ -124,7 +124,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        0%{?dist}
+Release:        1%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1711,6 +1711,10 @@ fi
 
 
 %changelog
+* Tue Feb 13 2018 Jorge A Gallegos <kad@blegh.net> - 2.0.16-1
+- Conditionally disable router-access for tcp_wrappers deprecation (Jorge Gallegos)
+- Updated to 2.0.16 which includes fix for CVE-2018-6758 (Jorge Gallegos)
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.15-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
