@@ -189,7 +189,7 @@ BuildRequires:  perl-Coro
 BuildRequires:  zeromq-devel
 %endif
 %if %{with go}
-BuildRequires:  libgo-devel, gcc-go
+BuildRequires:  gcc-go
 %endif
 %if %{with systemd}
 BuildRequires:  systemd-devel, systemd-units
@@ -612,7 +612,7 @@ This package contains the fiber plugin for uWSGI
 %package -n %{name}-plugin-gccgo
 Summary:  uWSGI - Plugin for GoLang support
 Group:    System Environment/Daemons
-Requires: %{name}-plugin-common = %{version}-%{release}, libgo
+Requires: %{name}-plugin-common = %{version}-%{release}
 
 %description -n %{name}-plugin-gccgo
 This package contains the gccgo plugin for uWSGI
