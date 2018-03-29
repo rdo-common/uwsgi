@@ -917,6 +917,7 @@ This package contains the zergpool plugin for uWSGI
 
 # Routers
 
+%if %{with tcp_wrappers}
 %package -n %{name}-router-access
 Summary:   uWSGI - Plugin for router_access router support
 Group:     System Environment/Daemons
@@ -925,6 +926,7 @@ Provides:  %{name}-routers = %{version}-%{release}
 
 %description -n %{name}-router-access
 This package contains the router_access plugin for uWSGI
+%endif
 
 %package -n %{name}-router-basicauth
 Summary:   uWSGI - Plugin for Basic Auth router support
@@ -1642,8 +1644,10 @@ fi
 
 # Routers
 
+%if %{with tcp_wrappers}
 %files -n %{name}-router-access
 %{_libdir}/%{name}/router_access_plugin.so
+%endif
 
 %files -n %{name}-router-basicauth
 %{_libdir}/%{name}/router_basicauth_plugin.so
