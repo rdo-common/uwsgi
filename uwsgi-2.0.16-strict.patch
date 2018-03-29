@@ -1,0 +1,48 @@
+diff -up uwsgi-2.0.16/plugins/rack/rack_plugin.c.strict uwsgi-2.0.16/plugins/rack/rack_plugin.c
+--- uwsgi-2.0.16/plugins/rack/rack_plugin.c.strict	2018-02-10 11:00:57.000000000 +0100
++++ uwsgi-2.0.16/plugins/rack/rack_plugin.c	2018-03-29 18:02:35.274649402 +0200
+@@ -71,7 +71,7 @@ static struct uwsgi_buffer *uwsgi_ruby_e
+ 
+ static struct uwsgi_buffer *uwsgi_ruby_exception_msg(struct wsgi_request *wsgi_req) {
+ 	VALUE err = rb_errinfo();
+-	VALUE e = rb_funcall(err, rb_intern("message"), 0, 0);
++	VALUE e = rb_funcall(err, rb_intern("message"), 0);
+ 	struct uwsgi_buffer *ub = uwsgi_buffer_new(RSTRING_LEN(e));
+ 	if (uwsgi_buffer_append(ub, RSTRING_PTR(e), RSTRING_LEN(e))) {
+ 		uwsgi_buffer_destroy(ub);
+@@ -114,7 +114,7 @@ error:
+ static void uwsgi_ruby_exception_log(struct wsgi_request *wsgi_req) {
+ 	VALUE err = rb_errinfo();
+ 	VALUE eclass = rb_class_name(rb_class_of(err));
+-	VALUE msg = rb_funcall(err, rb_intern("message"), 0, 0);
++	VALUE msg = rb_funcall(err, rb_intern("message"), 0);
+ 	
+ 	VALUE ary = rb_funcall(err, rb_intern("backtrace"), 0);
+         int i;
+diff -up uwsgi-2.0.16/plugins/router_basicauth/router_basicauth.c.strict uwsgi-2.0.16/plugins/router_basicauth/router_basicauth.c
+--- uwsgi-2.0.16/plugins/router_basicauth/router_basicauth.c.strict	2018-02-10 11:00:57.000000000 +0100
++++ uwsgi-2.0.16/plugins/router_basicauth/router_basicauth.c	2018-03-29 18:02:57.311779724 +0200
+@@ -2,7 +2,10 @@
+ 
+ #ifdef UWSGI_ROUTING
+ 
+-#if defined(__linux__) && defined(__GLIBC__)
++#if defined(__linux__) && (defined(__GLIBC__) && __GLIBC__ == 2) && \
++    (defined(__GLIBC_MINOR__) && __GLIBC_MINOR__ >= 2 && __GLIBC_MINOR__ < 4)
++    /* work around glibc-2.2.5 bug,
++     * has been fixed at some time in glibc-2.3.X */
+ #include <crypt.h>
+ #elif defined(__CYGWIN__)
+ #include <crypt.h>
+@@ -66,7 +69,10 @@ static uint16_t htpasswd_check(char *fil
+ 
+ 		if (clen > 13) cpwd[13] = 0;
+ 
+-#if defined(__linux__) && defined(__GLIBC__)
++#if defined(__linux__) && (defined(__GLIBC__) && __GLIBC__ == 2) && \
++    (defined(__GLIBC_MINOR__) && __GLIBC_MINOR__ >= 2 && __GLIBC_MINOR__ < 4)
++    /* work around glibc-2.2.5 bug,
++     * has been fixed at some time in glibc-2.3.X */
+ 		struct crypt_data cd;
+ 		cd.initialized = 0;
+ 		// we do as nginx here

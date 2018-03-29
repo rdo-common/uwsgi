@@ -144,6 +144,8 @@ Patch3:         uwsgi_fix_lua.patch
 Patch5:         uwsgi_fix_mongodb.patch
 Patch6:         uwsgi_v8-314_compatibility.patch
 Patch7:         uwsgi_fix_mono.patch
+# https://github.com/unbit/uwsgi/pull/1768
+Patch8:         uwsgi-2.0.16-strict.patch
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
 BuildRequires:  libyaml-devel, ruby-devel
 %if %{with tcp_wrappers}
@@ -1141,6 +1143,7 @@ echo "plugin_dir = %{_libdir}/%{name}" >> buildconf/$(basename %{SOURCE1})
 %if %{with mono}
 %patch7 -p1
 %endif
+%patch8 -p1 -b .strict
 
 #disable plug-ins
 %if %{without mongodblibs}
