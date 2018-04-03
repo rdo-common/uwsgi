@@ -124,7 +124,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1721,6 +1721,10 @@ fi
 
 
 %changelog
+* Tue Apr 03 2018 Till Maas <opensource@till.name> - 2.0.16-2
+- Fix building in Rawhide (#1556525) (Jakub Jelen)
+- Disable tcp_wrappers for Fedora 28 and newer (Jakub Jelen)
+
 * Tue Feb 13 2018 Jorge A Gallegos <kad@blegh.net> - 2.0.16-1
 - Conditionally disable router-access for tcp_wrappers deprecation (Jorge Gallegos)
 - Updated to 2.0.16 which includes fix for CVE-2018-6758 (Jorge Gallegos)
