@@ -1,0 +1,10 @@
+diff -up uwsgi-2.0.16/plugins/glusterfs/glusterfs.c.glfs uwsgi-2.0.16/plugins/glusterfs/glusterfs.c
+--- uwsgi-2.0.16/plugins/glusterfs/glusterfs.c.glfs	2018-04-03 14:35:48.099323330 +0200
++++ uwsgi-2.0.16/plugins/glusterfs/glusterfs.c	2018-04-03 14:35:07.573068567 +0200
+@@ -1,5 +1,5 @@
+ #include <uwsgi.h>
+-#include <api/glfs.h>
++#include <glusterfs/api/glfs.h>
+ 
+ extern struct uwsgi_server uwsgi;
+ 

@@ -146,6 +146,8 @@ Patch6:         uwsgi_v8-314_compatibility.patch
 Patch7:         uwsgi_fix_mono.patch
 # https://github.com/unbit/uwsgi/pull/1768
 Patch8:         uwsgi-2.0.16-strict.patch
+# https://github.com/unbit/uwsgi/pull/1772
+Patch9:         uwsgi-2.0.16-glfs.patch
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
 BuildRequires:  libyaml-devel, ruby-devel
 %if %{with tcp_wrappers}
@@ -1146,6 +1148,7 @@ echo "plugin_dir = %{_libdir}/%{name}" >> buildconf/$(basename %{SOURCE1})
 %patch7 -p1
 %endif
 %patch8 -p1 -b .strict
+%patch9 -p1 -b .glfs
 
 #disable plug-ins
 %if %{without mongodblibs}
