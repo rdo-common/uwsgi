@@ -15,8 +15,7 @@
 %bcond_without systemd
 %bcond_without go
 %bcond_without python3
-%bcond_without tornado3
-%{!?python3_pkgversion: %global python3_pkgversion 3}
+%bcond_without python3_tornado
 %bcond_without ruby19
 %bcond_without tuntap
 %bcond_without zeromq
@@ -66,7 +65,7 @@
 %bcond_with go
 # el6 doesn't have python3
 %bcond_with python3
-%bcond_with tornado3
+%bcond_with python3_tornado
 # el6 ships with ruby 1.8 but fiberloop/rbthreads needs 1.9
 %bcond_with ruby19
 # el6 doesn't have perl-PSGI
@@ -89,9 +88,8 @@
 %bcond_without systemd
 # el7 does have python3
 %bcond_without python3
-%{!?python3_pkgversion: %global python3_pkgversion 34}
 # ...but no python3-tornado yet
-%bcond_with tornado3
+%bcond_with python3_tornado
 # el7 doesn't have zeromq
 %bcond_with zeromq
 # el7 doesn't have greenlet
@@ -124,7 +122,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -261,23 +259,29 @@ Requires:   %{name} = %{version}-%{release}
 This package contains the development header files and libraries
 for uWSGI extensions
 
-%package -n python-uwsgidecorators
-Summary:        Python decorators providing access to the uwsgi API
+%package -n python2-uwsgidecorators
+Summary:        Python 2 decorators providing access to the uwsgi API
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       %{name}-plugin-python = %{version}-%{release}
+Requires:       %{name}-plugin-python2 = %{version}-%{release}
+Obsoletes:      python-uwsgidecorators < 2.0.16-4
 
-%description -n python-uwsgidecorators
-The uwsgidecorators Python module provides higher-level access to the uWSGI API.
+%description -n python2-uwsgidecorators
+The uwsgidecorators Python 2 module provides higher-level access to the uWSGI API.
 
-%package -n python3-uwsgidecorators
-Summary:        Python 3 decorators providing access to the uwsgi API
+%if %{with python3}
+%package -n python%{python3_pkgversion}-uwsgidecorators
+Summary:        Python %{python3_version} decorators providing access to the uwsgi API
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       %{name}-plugin-python3 = %{version}-%{release}
+Requires:       %{name}-plugin-python%{python3_pkgversion} = %{version}-%{release}
+%if 0%{?rhel} == 7
+Obsoletes:      python3-uwsgidecorators < 2.0.16-4
+%endif
 
-%description -n python3-uwsgidecorators
-The uwsgidecorators Python 3 module provides higher-level access to the uWSGI API.
+%description -n python%{python3_pkgversion}-uwsgidecorators
+The uwsgidecorators Python %{python3_version} module provides higher-level access to the uWSGI API.
+%endif
 
 %package -n %{name}-docs
 Summary:  uWSGI - Documentation
@@ -629,13 +633,14 @@ Requires: %{name}-plugin-common = %{version}-%{release}, GeoIP
 %description -n %{name}-plugin-geoip
 This package contains the geoip plugin for uWSGI
 
-%package -n %{name}-plugin-gevent
-Summary:  uWSGI - Plugin for GEvent support
+%package -n %{name}-plugin-python2-gevent
+Summary:  uWSGI - Plugin for Python 2 GEvent support
 Group:    System Environment/Daemons
-Requires: %{name}-plugin-python = %{version}-%{release}, libevent
+Requires: %{name}-plugin-python2 = %{version}-%{release}, libevent
+Obsoletes: uwsgi-plugin-gevent < 2.0.16-4
 
-%description -n %{name}-plugin-gevent
-This package contains the gevent plugin for uWSGI
+%description -n %{name}-plugin-python2-gevent
+This package contains the Python2 gevent plugin for uWSGI
 
 %if %{with glusterfs}
 %package -n %{name}-plugin-glusterfs
@@ -648,13 +653,14 @@ This package contains the glusterfs plugin for uWSGI
 %endif
 
 %if %{with greenlet}
-%package -n %{name}-plugin-greenlet
-Summary:  uWSGI - Plugin for Python Greenlet support
+%package -n %{name}-plugin-python2-greenlet
+Summary:  uWSGI - Plugin for Python 2 Greenlet support
 Group:    System Environment/Daemons
-Requires: python-greenlet, %{name}-plugin-python = %{version}-%{release}
+Requires: python-greenlet, %{name}-plugin-python2 = %{version}-%{release}
+Obsoletes: uwsgi-plugin-greenlet < 2.0.16-4
 
-%description -n %{name}-plugin-greenlet
-This package contains the python greenlet plugin for uWSGI
+%description -n %{name}-plugin-python2-greenlet
+This package contains the Python 2 greenlet plugin for uWSGI
 %endif
 
 %if %{with gridfs}
@@ -756,26 +762,32 @@ This package contains the PHP plugin for uWSGI
 %package -n %{name}-plugin-pty
 Summary:  uWSGI - Plugin for PTY support
 Group:    System Environment/Daemons
-Requires: python, %{name}-plugin-common = %{version}-%{release}
+Requires: python2, %{name}-plugin-common = %{version}-%{release}
 
 %description -n %{name}-plugin-pty
 This package contains the pty plugin for uWSGI
 
-%package -n %{name}-plugin-python
-Summary:  uWSGI - Plugin for Python support
+%package -n %{name}-plugin-python2
+Summary:  uWSGI - Plugin for Python 2 support
 Group:    System Environment/Daemons
-Requires: python, %{name}-plugin-common = %{version}-%{release}
+Requires: python2, %{name}-plugin-common = %{version}-%{release}
+Obsoletes: uwsgi-plugin-python < 2.0.16-4
 
-%description -n %{name}-plugin-python
-This package contains the python plugin for uWSGI
+%description -n %{name}-plugin-python2
+This package contains the Python 2 plugin for uWSGI
 
-%package -n %{name}-plugin-python3
-Summary:  uWSGI - Plugin for Python 3 support
+%if %{with python3}
+%package -n %{name}-plugin-python%{python3_pkgversion}
+Summary:  uWSGI - Plugin for Python %{python3_version} support
 Group:    System Environment/Daemons
 Requires: python%{python3_pkgversion}, %{name}-plugin-common = %{version}-%{release}
+%if 0%{?rhel} == 7
+Obsoletes: uwsgi-plugin-python3 < 2.0.16-4
+%endif
 
-%description -n %{name}-plugin-python3
-This package contains the Python 3 plugin for uWSGI
+%description -n %{name}-plugin-python%{python3_pkgversion}
+This package contains the Python %{python3_version} plugin for uWSGI
+%endif
 
 %package -n %{name}-plugin-rack
 Summary:  uWSGI - Ruby rack plugin
@@ -851,21 +863,27 @@ Requires: %{name}-plugin-common = %{version}-%{release}
 %description -n %{name}-plugin-ssi
 This package contains the ssi plugin for uWSGI
 
-%package -n %{name}-plugin-tornado
-Summary:  uWSGI - Plugin for Tornado support
+%package -n %{name}-plugin-python2-tornado
+Summary:  uWSGI - Plugin for Tornado (Python 2) support
 Group:    System Environment/Daemons
 Requires: %{name}-plugin-common = %{version}-%{release}, python-tornado
+Obsoletes: uwsgi-plugin-tornado < 2.0.16-4
 
-%description -n %{name}-plugin-tornado
-This package contains the tornado plugin for uWSGI
+%description -n %{name}-plugin-python2-tornado
+This package contains the tornado (Python 2) plugin for uWSGI
 
-%package -n %{name}-plugin-tornado3
-Summary:  uWSGI - Plugin for Tornado/Python3 support
+%if %{with python3_tornado}
+%package -n %{name}-plugin-python%{python3_pkgversion}-tornado
+Summary:  uWSGI - Plugin for Tornado (Python %{python3_version}) support
 Group:    System Environment/Daemons
 Requires: %{name}-plugin-common = %{version}-%{release}, python3-tornado
+%if 0%{?fedora} && 0%{?fedora} < 29
+Obsoletes: uwsgi-plugin-tornado3 < 2.0.16-4
+%endif
 
-%description -n %{name}-plugin-tornado3
-This package contains the tornado (python v3) plugin for uWSGI
+%description -n %{name}-plugin-python%{python3_pkgversion}-tornado
+This package contains the tornado (Python %{python3_version}) plugin for uWSGI
+%endif
 
 %package -n %{name}-plugin-ugreen
 Summary:  uWSGI - Plugin for uGreen support
@@ -1169,9 +1187,9 @@ sed -in "s/mono, //" buildconf/fedora.ini
 %build
 CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" python uwsgiconfig.py --build fedora.ini
 %if %{with python3}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/python fedora python3
-%if %{with tornado3}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/tornado fedora tornado3
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/python fedora python%{python3_pkgversion}
+%if %{with python3_tornado}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/tornado fedora python%{python3_pkgversion}_tornado
 %endif
 %endif
 %if %{with mongodblibs}
@@ -1360,12 +1378,12 @@ fi
 %{_includedir}/%{name}
 %{_usrsrc}/%{name}
 
-%files -n python-uwsgidecorators
+%files -n python2-uwsgidecorators
 %defattr(-,root,root,-)
 %{python_sitelib}/*
 
 %if %{with python3}
-%files -n python3-uwsgidecorators
+%files -n python%{python3_pkgversion}-uwsgidecorators
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
 %endif
@@ -1518,7 +1536,7 @@ fi
 %files -n %{name}-plugin-geoip
 %{_libdir}/%{name}/geoip_plugin.so
 
-%files -n %{name}-plugin-gevent
+%files -n %{name}-plugin-python2-gevent
 %{_libdir}/%{name}/gevent_plugin.so
 
 %if %{with glusterfs}
@@ -1527,7 +1545,7 @@ fi
 %endif
 
 %if %{with greenlet}
-%files -n %{name}-plugin-greenlet
+%files -n %{name}-plugin-python2-greenlet
 %{_libdir}/%{name}/greenlet_plugin.so
 %endif
 
@@ -1578,12 +1596,12 @@ fi
 %files -n %{name}-plugin-pty
 %{_libdir}/%{name}/pty_plugin.so
 
-%files -n %{name}-plugin-python
+%files -n %{name}-plugin-python2
 %{_libdir}/%{name}/python_plugin.so
 
 %if %{with python3}
-%files -n %{name}-plugin-python3
-%{_libdir}/%{name}/python3_plugin.so
+%files -n %{name}-plugin-python%{python3_pkgversion}
+%{_libdir}/%{name}/python%{python3_pkgversion}_plugin.so
 %endif
 
 %files -n %{name}-plugin-rack
@@ -1617,12 +1635,12 @@ fi
 %files -n %{name}-plugin-ssi
 %{_libdir}/%{name}/ssi_plugin.so
 
-%files -n %{name}-plugin-tornado
+%files -n %{name}-plugin-python2-tornado
 %{_libdir}/%{name}/tornado_plugin.so
 
-%if %{with tornado3}
-%files -n %{name}-plugin-tornado3
-%{_libdir}/%{name}/tornado3_plugin.so
+%if %{with python3_tornado}
+%files -n %{name}-plugin-python%{python3_pkgversion}-tornado
+%{_libdir}/%{name}/python%{python3_pkgversion}_tornado_plugin.so
 %endif
 
 %files -n %{name}-plugin-ugreen
@@ -1721,6 +1739,13 @@ fi
 
 
 %changelog
+* Tue Jun 26 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-4
+- Modernize and generalize building of Python subpackages:
+  - replace python with python2
+  - use appropriate macros for when refering to Python 3
+  - prefix Python-dependent plugins with the version of Python they are built
+    with
+
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 2.0.16-3
 - Rebuilt for Python 3.7
 
