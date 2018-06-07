@@ -24,6 +24,8 @@
 %bcond_without perl
 %bcond_without glusterfs
 %bcond_without java
+%bcond_without xmpp
+%bcond_without rack
 #mono
 %ifnarch %{mono_arches}
 %bcond_with mono
@@ -83,12 +85,10 @@
 
 # Conditionally enable/disable some things in epel7
 %if 0%{?rhel} == 7
-# el7 does have java
-%bcond_without java
 # el7 does have systemd
 %bcond_without systemd
 # el7 does have python3
-%bcond_without python3
+%bcond_with python3
 %{!?python3_pkgversion: %global python3_pkgversion 34}
 # ...but no python3-tornado yet
 %bcond_with tornado3
@@ -98,7 +98,8 @@
 %bcond_with greenlet
 # el7 does have perl-PSGI
 # el7 doesn't have perl-Coro
-%bcond_without perl
+# perl-PSGI is not in CentOS/RDO
+%bcond_with perl
 # el7 can now build glusterfs but only on x86_64
 %ifnarch x86_64
 %bcond_with glusterfs
@@ -107,6 +108,14 @@
 %endif
 # this fails in el7 not sure why
 %bcond_with gridfs
+# For RDO we don't want to rebuild unneded plugins which requires packages not
+# found in CentOS or RDO dependencies as alarm-xmpp, perl-psgi, rack and ring.
+# gloox is needed for xmpp and it is not in CentOS/RDO
+%bcond_with xmpp
+# rubygem-rack is needed for rack and it is not in CentOS/RDO
+%bcond_with rack
+# clojure is needed for ring plugin and is not in CentOS/RDO
+%bcond_with java
 %endif
 
 # Turn off byte compilation so it doesn't try
@@ -175,7 +184,7 @@ BuildRequires:  java-1.8.0-openjdk-devel
 %endif
 BuildRequires:  java-devel, sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, libcurl-devel
-BuildRequires:  gloox-devel, libstdc++-devel
+BuildRequires:  libstdc++-devel
 BuildRequires:  GeoIP-devel, libevent-devel, zlib-devel
 BuildRequires:  openldap-devel, boost-devel
 BuildRequires:  libattr-devel, libxslt-devel
@@ -206,6 +215,10 @@ BuildRequires:  v8-devel
 %endif
 %if %{with mongodblibs}
 BuildRequires:  libmongodb-devel
+%endif
+
+%if %{with xmpp}
+BuildRequires:  gloox-devel
 %endif
 
 %if 0%{?fedora} >= 28
@@ -341,6 +354,7 @@ Requires: %{name}-plugin-common = %{version}-%{release}, libcurl
 %description -n %{name}-alarm-curl
 This package contains the alarm_curl alarm plugin for uWSGI
 
+%if %{with xmpp}
 %package -n %{name}-alarm-xmpp
 Summary:  uWSGI - Curl alarm plugin
 Group:    System Environment/Daemons
@@ -348,6 +362,7 @@ Requires: %{name}-plugin-common = %{version}-%{release}, gloox
 
 %description -n %{name}-alarm-xmpp
 This package contains the alarm_xmpp alarm plugin for uWSGI
+%endif
 
 # Transformations
 
@@ -601,6 +616,7 @@ Requires: %{name}-plugin-common = %{version}-%{release}
 %description -n %{name}-plugin-dummy
 This package contains the dummy plugin for uWSGI
 
+%if %{with rack}
 %package -n %{name}-plugin-fiber
 Summary:  uWSGI - Plugin for Ruby Fiber support
 Group:    System Environment/Daemons
@@ -608,6 +624,7 @@ Requires: %{name}-plugin-common = %{version}-%{release}, %{name}-plugin-rack = %
 
 %description -n %{name}-plugin-fiber
 This package contains the fiber plugin for uWSGI
+%endif
 
 %package -n %{name}-plugin-gccgo
 Summary:  uWSGI - Plugin for GoLang support
@@ -773,6 +790,7 @@ Requires: python%{python3_pkgversion}, %{name}-plugin-common = %{version}-%{rele
 %description -n %{name}-plugin-python3
 This package contains the Python 3 plugin for uWSGI
 
+%if %{with rack}
 %package -n %{name}-plugin-rack
 Summary:  uWSGI - Ruby rack plugin
 Group:    System Environment/Daemons
@@ -780,6 +798,7 @@ Requires: rubygem-rack, %{name}-plugin-common = %{version}-%{release}
 
 %description -n %{name}-plugin-rack
 This package contains the rack plugin for uWSGI
+%endif
 
 %package -n %{name}-plugin-rbthreads
 Summary:  uWSGI - Ruby native threads support plugin
@@ -1156,6 +1175,12 @@ sed -in "s/gridfs, //" buildconf/fedora.ini
 %if %{without mono}
 sed -in "s/mono, //" buildconf/fedora.ini
 %endif
+%if %{without xmpp}
+sed -in "s/.*alarm_xmpp,//" buildconf/fedora.ini
+%endif
+%if %{without rack}
+sed -in "s/.*rack,//" buildconf/fedora.ini
+%endif
 
 
 %build
@@ -1180,7 +1205,9 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/gccgo fedora
 %endif
 %if %{with ruby19}
+%if %{with rack}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/fiber fedora
+%endif
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/rbthreads fedora
 %endif
 %if %{with systemd}
@@ -1248,7 +1275,8 @@ echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
 %{__install} -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/%{name}
 %{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
-%py_byte_compile %{__python} %{buildroot}%{python_sitelib}/
+find %{buildroot}%{python_sitelib}/ -type f -a -name "*.py" -print0 | xargs -0 %{__python} -c 'import py_compile, sys; [py_compile.compile(f, dfile=f.partition("$RPM_BUILD_ROOT")[2]) for f in sys.argv[1:]]' || :
+find %{buildroot}%{python_sitelib}/ -type f -a -name "*.py" -print0 | xargs -0 %{__python} -O -c 'import py_compile, sys; [py_compile.compile(f, dfile=f.partition("$RPM_BUILD_ROOT")[2]) for f in sys.argv[1:]]' || :
 %endif
 %if %{with python3}
 %{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
@@ -1394,8 +1422,10 @@ fi
 %files -n %{name}-alarm-curl
 %{_libdir}/%{name}/alarm_curl_plugin.so
 
+%if %{with xmpp}
 %files -n %{name}-alarm-xmpp
 %{_libdir}/%{name}/alarm_xmpp_plugin.so
+%endif
 
 # Transformations
 
@@ -1498,8 +1528,10 @@ fi
 %{_libdir}/%{name}/dummy_plugin.so
 
 %if %{with ruby19}
+%if %{with rack}
 %files -n %{name}-plugin-fiber
 %{_libdir}/%{name}/fiber_plugin.so
+%endif
 %endif
 
 %if %{with go}
@@ -1578,8 +1610,10 @@ fi
 %{_libdir}/%{name}/python3_plugin.so
 %endif
 
+%if %{with rack}
 %files -n %{name}-plugin-rack
 %{_libdir}/%{name}/rack_plugin.so
+%endif
 
 %if %{with ruby19}
 %files -n %{name}-plugin-rbthreads
