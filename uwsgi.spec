@@ -124,7 +124,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1721,6 +1721,9 @@ fi
 
 
 %changelog
+* Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 2.0.16-3
+- Rebuilt for Python 3.7
+
 * Tue Apr 03 2018 Till Maas <opensource@till.name> - 2.0.16-2
 - Fix building in Rawhide (#1556525) (Jakub Jelen)
 - Disable tcp_wrappers for Fedora 28 and newer (Jakub Jelen)
