@@ -16,6 +16,8 @@
 %bcond_without go
 %bcond_without python3
 %bcond_without python3_tornado
+# Fedora doesn't have two versions of python3
+%bcond_with python3_other
 %bcond_without ruby19
 %bcond_without tuntap
 %bcond_without zeromq
@@ -66,6 +68,7 @@
 # el6 doesn't have python3
 %bcond_with python3
 %bcond_with python3_tornado
+%bcond_with python3_other
 # el6 ships with ruby 1.8 but fiberloop/rbthreads needs 1.9
 %bcond_with ruby19
 # el6 doesn't have perl-PSGI
@@ -90,6 +93,8 @@
 %bcond_without python3
 # ...but no python3-tornado yet
 %bcond_with python3_tornado
+# el 7 has another version of python3
+%bcond_without python3_other
 # el7 doesn't have zeromq
 %bcond_with zeromq
 # el7 doesn't have greenlet
@@ -153,6 +158,9 @@ BuildRequires:  tcp_wrappers-devel
 %endif
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
+%endif
+%if %{with python3_other}
+BuildRequires:  python%{python3_other_pkgversion}-devel
 %endif
 %if %{with greenlet}
 BuildRequires:  python-greenlet-devel
@@ -281,6 +289,17 @@ Obsoletes:      python3-uwsgidecorators < 2.0.16-4
 
 %description -n python%{python3_pkgversion}-uwsgidecorators
 The uwsgidecorators Python %{python3_version} module provides higher-level access to the uWSGI API.
+%endif
+
+%if %{with python3_other}
+%package -n python%{python3_other_pkgversion}-uwsgidecorators
+Summary:        Python %{python3_other_version} decorators providing access to the uwsgi API
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}-plugin-python%{python3_other_pkgversion} = %{version}-%{release}
+
+%description -n python%{python3_other_pkgversion}-uwsgidecorators
+The uwsgidecorators Python %{python3_other_version} module provides higher-level access to the uWSGI API.
 %endif
 
 %package -n %{name}-docs
@@ -789,6 +808,16 @@ Obsoletes: uwsgi-plugin-python3 < 2.0.16-4
 This package contains the Python %{python3_version} plugin for uWSGI
 %endif
 
+%if %{with python3_other}
+%package -n %{name}-plugin-python%{python3_other_pkgversion}
+Summary:  uWSGI - Plugin for Python %{python3_other_version} support
+Group:    System Environment/Daemons
+Requires: python%{python3_other_pkgversion}, %{name}-plugin-common = %{version}-%{release}
+
+%description -n %{name}-plugin-python%{python3_other_pkgversion}
+This package contains the Python %{python3_other_version} plugin for uWSGI
+%endif
+
 %package -n %{name}-plugin-rack
 Summary:  uWSGI - Ruby rack plugin
 Group:    System Environment/Daemons
@@ -1192,6 +1221,9 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/tornado fedora python%{python3_pkgversion}_tornado
 %endif
 %endif
+%if %{with python3_other}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig.py --plugin plugins/python fedora python%{python3_other_pkgversion}
+%endif
 %if %{with mongodblibs}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/mongodblog fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable -std=gnu++11 -Wno-error" python uwsgiconfig.py --plugin plugins/stats_pusher_mongodb fedora
@@ -1280,6 +1312,12 @@ echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
 %{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
 %py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/
+%endif
+%endif
+%if %{with python3_other}
+%{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_other_sitelib}/uwsgidecorators.py
+%if %{manual_py_compile} == 1
+%py_byte_compile %{__python3_other} %{buildroot}%{python3_other_sitelib}/
 %endif
 %endif
 %if %{with java}
@@ -1386,6 +1424,12 @@ fi
 %files -n python%{python3_pkgversion}-uwsgidecorators
 %defattr(-,root,root,-)
 %{python3_sitelib}/*
+%endif
+
+%if %{with python3_other}
+%files -n python%{python3_other_pkgversion}-uwsgidecorators
+%defattr(-,root,root,-)
+%{python3_other_sitelib}/*
 %endif
 
 %files -n %{name}-docs
@@ -1604,6 +1648,11 @@ fi
 %{_libdir}/%{name}/python%{python3_pkgversion}_plugin.so
 %endif
 
+%if %{with python3_other}
+%files -n %{name}-plugin-python%{python3_other_pkgversion}
+%{_libdir}/%{name}/python%{python3_other_pkgversion}_plugin.so
+%endif
+
 %files -n %{name}-plugin-rack
 %{_libdir}/%{name}/rack_plugin.so
 
@@ -1745,6 +1794,7 @@ fi
   - use appropriate macros for when refering to Python 3
   - prefix Python-dependent plugins with the version of Python they are built
     with
+- Also build Python 3 subpackages for the other Python 3 version in EPEL7
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 2.0.16-3
 - Rebuilt for Python 3.7
