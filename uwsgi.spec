@@ -15,7 +15,6 @@
 %bcond_without systemd
 %bcond_without go
 %bcond_without python3
-%bcond_without python3_tornado
 # Fedora doesn't have two versions of python3
 %bcond_with python3_other
 %bcond_without ruby19
@@ -67,7 +66,6 @@
 %bcond_with go
 # el6 doesn't have python3
 %bcond_with python3
-%bcond_with python3_tornado
 %bcond_with python3_other
 # el6 ships with ruby 1.8 but fiberloop/rbthreads needs 1.9
 %bcond_with ruby19
@@ -91,8 +89,6 @@
 %bcond_without systemd
 # el7 does have python3
 %bcond_without python3
-# ...but no python3-tornado yet
-%bcond_with python3_tornado
 # el 7 has another version of python3
 %bcond_without python3_other
 # el7 doesn't have zeromq
@@ -921,11 +917,11 @@ Obsoletes: uwsgi-plugin-tornado < 2.0.16-4
 %description -n %{name}-plugin-python2-tornado
 This package contains the tornado (Python 2) plugin for uWSGI
 
-%if %{with python3_tornado}
+%if %{with python3}
 %package -n %{name}-plugin-python%{python3_pkgversion}-tornado
 Summary:  uWSGI - Plugin for Tornado (Python %{python3_version}) support
 Group:    System Environment/Daemons
-Requires: %{name}-plugin-common = %{version}-%{release}, python3-tornado
+Requires: %{name}-plugin-common = %{version}-%{release}, python%{python3_pkgversion}-tornado
 %if 0%{?fedora} && 0%{?fedora} < 29
 Obsoletes: uwsgi-plugin-tornado3 < 2.0.16-4
 %endif
@@ -1238,9 +1234,7 @@ CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" python uwsgiconfig.
 %if %{with python3}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/python fedora python%{python3_pkgversion}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_pkgversion}_gevent
-%if %{with python3_tornado}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/tornado fedora python%{python3_pkgversion}_tornado
-%endif
 %endif
 %if %{with python3_other}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig.py --plugin plugins/python fedora python%{python3_other_pkgversion}
@@ -1719,7 +1713,7 @@ fi
 %files -n %{name}-plugin-python2-tornado
 %{_libdir}/%{name}/tornado_plugin.so
 
-%if %{with python3_tornado}
+%if %{with python3}
 %files -n %{name}-plugin-python%{python3_pkgversion}-tornado
 %{_libdir}/%{name}/python%{python3_pkgversion}_tornado_plugin.so
 %endif
@@ -1822,6 +1816,8 @@ fi
 %changelog
 * Wed Jun 27 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-5
 - Build Python 3 version(s) of gevent plugin on Fedora and EPEL7
+- Always build Python 3 version of tornado plugin when building with Python 3
+  (drop python3_tornado build conditional)
 
 * Tue Jun 26 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-4
 - Modernize and generalize building of Python subpackages:
