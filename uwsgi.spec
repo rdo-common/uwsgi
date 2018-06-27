@@ -127,7 +127,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -659,7 +659,27 @@ Requires: %{name}-plugin-python2 = %{version}-%{release}, libevent
 Obsoletes: uwsgi-plugin-gevent < 2.0.16-4
 
 %description -n %{name}-plugin-python2-gevent
-This package contains the Python2 gevent plugin for uWSGI
+This package contains the Python 2 gevent plugin for uWSGI
+
+%if %{with python3}
+%package -n %{name}-plugin-python%{python3_pkgversion}-gevent
+Summary:  uWSGI - Plugin for Python %{python3_version} GEvent support
+Group:    System Environment/Daemons
+Requires: %{name}-plugin-python%{python3_pkgversion} = %{version}-%{release}, libevent
+
+%description -n %{name}-plugin-python%{python3_pkgversion}-gevent
+This package contains the Python %{python3_version} gevent plugin for uWSGI
+%endif
+
+%if %{with python3_other}
+%package -n %{name}-plugin-python%{python3_other_pkgversion}-gevent
+Summary:  uWSGI - Plugin for Python %{python3_other_version} GEvent support
+Group:    System Environment/Daemons
+Requires: %{name}-plugin-python%{python3_other_pkgversion} = %{version}-%{release}, libevent
+
+%description -n %{name}-plugin-python%{python3_other_pkgversion}-gevent
+This package contains the Python %{python3_other_version} gevent plugin for uWSGI
+%endif
 
 %if %{with glusterfs}
 %package -n %{name}-plugin-glusterfs
@@ -1217,12 +1237,14 @@ sed -in "s/mono, //" buildconf/fedora.ini
 CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" python uwsgiconfig.py --build fedora.ini
 %if %{with python3}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/python fedora python%{python3_pkgversion}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_pkgversion}_gevent
 %if %{with python3_tornado}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/tornado fedora python%{python3_pkgversion}_tornado
 %endif
 %endif
 %if %{with python3_other}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig.py --plugin plugins/python fedora python%{python3_other_pkgversion}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_other_pkgversion}_gevent
 %endif
 %if %{with mongodblibs}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/mongodblog fedora
@@ -1583,6 +1605,16 @@ fi
 %files -n %{name}-plugin-python2-gevent
 %{_libdir}/%{name}/gevent_plugin.so
 
+%if %{with python3}
+%files -n %{name}-plugin-python%{python3_pkgversion}-gevent
+%{_libdir}/%{name}/python%{python3_pkgversion}_gevent_plugin.so
+%endif
+
+%if %{with python3_other}
+%files -n %{name}-plugin-python%{python3_other_pkgversion}-gevent
+%{_libdir}/%{name}/python%{python3_other_pkgversion}_gevent_plugin.so
+%endif
+
 %if %{with glusterfs}
 %files -n %{name}-plugin-glusterfs
 %{_libdir}/%{name}/glusterfs_plugin.so
@@ -1788,6 +1820,9 @@ fi
 
 
 %changelog
+* Wed Jun 27 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-5
+- Build Python 3 version(s) of gevent plugin on Fedora and EPEL7
+
 * Tue Jun 26 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-4
 - Modernize and generalize building of Python subpackages:
   - replace python with python2
