@@ -93,8 +93,8 @@
 %bcond_without python3_other
 # el7 doesn't have zeromq
 %bcond_with zeromq
-# el7 doesn't have greenlet
-%bcond_with greenlet
+# el7 does have greenlet
+%bcond_without greenlet
 # el7 does have perl-PSGI
 # el7 doesn't have perl-Coro
 %bcond_without perl
@@ -160,6 +160,9 @@ BuildRequires:  python%{python3_other_pkgversion}-devel
 %endif
 %if %{with greenlet}
 BuildRequires:  python-greenlet-devel
+%if %{with python3}
+BuildRequires:  python%{python3_pkgversion}-greenlet-devel
+%endif
 %endif
 %if %{with glusterfs}
 BuildRequires:  glusterfs-devel, glusterfs-api-devel
@@ -696,6 +699,16 @@ Obsoletes: uwsgi-plugin-greenlet < 2.0.16-4
 
 %description -n %{name}-plugin-python2-greenlet
 This package contains the Python 2 greenlet plugin for uWSGI
+
+%if %{with python3}
+%package -n %{name}-plugin-python%{python3_pkgversion}-greenlet
+Summary:  uWSGI - Plugin for Python %{python3_version} Greenlet support
+Group:    System Environment/Daemons
+Requires: python%{python3_pkgversion}-greenlet, %{name}-plugin-python%{python3_pkgversion} = %{version}-%{release}
+
+%description -n %{name}-plugin-python%{python3_pkgversion}-greenlet
+This package contains the Python %{python3_version} greenlet plugin for uWSGI
+%endif
 %endif
 
 %if %{with gridfs}
@@ -1275,6 +1288,9 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin
 %endif
 %if %{with greenlet}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/greenlet fedora
+%if %{with python3}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/greenlet fedora python%{python3_pkgversion}_greenlet
+%endif
 %endif
 %if %{with glusterfs}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/glusterfs fedora
@@ -1617,6 +1633,11 @@ fi
 %if %{with greenlet}
 %files -n %{name}-plugin-python2-greenlet
 %{_libdir}/%{name}/greenlet_plugin.so
+
+%if %{with python3}
+%files -n %{name}-plugin-python%{python3_pkgversion}-greenlet
+%{_libdir}/%{name}/python%{python3_pkgversion}_greenlet_plugin.so
+%endif
 %endif
 
 %if %{with gridfs}
@@ -1816,6 +1837,8 @@ fi
 %changelog
 * Wed Jun 27 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-5
 - Build Python 3 version(s) of gevent plugin on Fedora and EPEL7
+- Build Python 3 version of greenlet plugin on Fedora and EPEL7
+- Build Python 2 version of greenlet plugin on EPEL7
 - Always build Python 3 version of tornado plugin when building with Python 3
   (drop python3_tornado build conditional)
 
