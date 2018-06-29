@@ -123,7 +123,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1835,6 +1835,9 @@ fi
 
 
 %changelog
+* Fri Jun 29 2018 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.16-6
+- Perl 5.28 rebuild
+
 * Wed Jun 27 2018 Tadej Janež <tadej.j@nez.si> - 2.0.16-5
 - Build Python 3 version(s) of gevent plugin on Fedora and EPEL7
 - Build Python 3 version of greenlet plugin on Fedora and EPEL7
