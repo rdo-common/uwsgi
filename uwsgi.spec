@@ -123,7 +123,7 @@
 
 Name:           uwsgi
 Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1835,6 +1835,9 @@ fi
 
 
 %changelog
+* Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
+- Perl 5.28 rebuild
+
 * Fri Jun 29 2018 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.16-6
 - Perl 5.28 rebuild
 
