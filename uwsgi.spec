@@ -229,9 +229,7 @@ Obsoletes:      uwsgi-plugin-admin <= 2.0.6
 
 Requires(pre):    shadow-utils
 %if %{with systemd}
-Requires(post):   systemd-units
-Requires(preun):  systemd-units
-Requires(postun): systemd-units
+%{?systemd_requires}
 %else
 Requires(post): chkconfig
 Requires(preun): chkconfig
