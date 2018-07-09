@@ -89,8 +89,8 @@
 %bcond_without python3_other
 # el7 doesn't have zeromq
 %bcond_with zeromq
-# el7 does have greenlet
-%bcond_without greenlet
+# el7 does have greenlet, but only on x86_64
+%bcond_with greenlet
 # el7 does have perl-PSGI
 # el7 does have perl-Coro
 %bcond_without perl
@@ -1816,6 +1816,7 @@ fi
 - Use /var/run/uwsgi when not using systemd
 - Build with versioned python command
 - Remove %%config from systemd unit file
+- Disable greenlet plugin on EL7
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
