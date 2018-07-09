@@ -1,12 +1,8 @@
-# Version
-%global majornumber 2
-%global minornumber 0
-%global releasenumber 16
-
 # Documentation sources:
-%global commit eb4ad986cba70ed4acc44699e80965c1175aa323
+%global commit 32a8f7304d0e705d36dd9644707552939c67f547
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global docrepo uwsgi-docs
+
 %{!?_httpd_apxs: %{expand: %%global _httpd_apxs %%{_sbindir}/apxs}}
 %{!?_httpd_moddir: %{expand: %%global _httpd_moddir %%{_libdir}/httpd/modules}}
 
@@ -89,7 +85,7 @@
 %bcond_without systemd
 # el7 does have python3
 %bcond_without python3
-# el 7 has another version of python3
+# el7 has another version of python3
 %bcond_without python3_other
 # el7 doesn't have zeromq
 %bcond_with zeromq
@@ -122,8 +118,8 @@
 %endif
 
 Name:           uwsgi
-Version:        %{majornumber}.%{minornumber}.%{releasenumber}
-Release:        7%{?dist}
+Version:        2.0.17.1
+Release:        1%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -143,8 +139,6 @@ Patch3:         uwsgi_fix_lua.patch
 Patch5:         uwsgi_fix_mongodb.patch
 Patch6:         uwsgi_v8-314_compatibility.patch
 Patch7:         uwsgi_fix_mono.patch
-# https://github.com/unbit/uwsgi/pull/1768
-Patch8:         uwsgi-2.0.16-strict.patch
 # https://github.com/unbit/uwsgi/pull/1772
 Patch9:         uwsgi-2.0.16-glfs.patch
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
@@ -1214,7 +1208,6 @@ cp -p %{SOURCE5} README.Fedora
 %if %{with mono}
 %patch7 -p1
 %endif
-%patch8 -p1 -b .strict
 %patch9 -p1 -b .glfs
 
 #disable plug-ins
@@ -1312,7 +1305,7 @@ mkdir docs
 tar -C docs/ --strip-components=1 -xvzf %{SOURCE4}
 tar -C %{buildroot}%{_usrsrc}/uwsgi/%{version} --strip-components=1 -xvzf %{SOURCE0}
 cp %{SOURCE1} %{buildroot}%{_usrsrc}/uwsgi/%{version}/buildconf/
-cp docs/Changelog-%{majornumber}.%{minornumber}.%{releasenumber}.rst CHANGELOG
+cp docs/Changelog-%{version}.rst CHANGELOG
 rm -f docs/.gitignore
 echo "%{commit}, i.e. this:" >> README.Fedora
 echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
@@ -1818,6 +1811,9 @@ fi
 
 
 %changelog
+* Mon Jul 09 2018 Carl George <carl@george.computer> - 2.0.17.1-1
+- Latest upstream (rhbz#1549354)
+
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
 
