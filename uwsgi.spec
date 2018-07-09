@@ -131,6 +131,7 @@ Source3:        emperor.ini
 Source4:        https://github.com/unbit/%{docrepo}/archive/%{commit}/%{docrepo}-%{shortcommit}.tar.gz
 Source5:        README.Fedora
 Source6:        uwsgi.init
+Source7:        uwsgi.tmpfiles
 Patch0:         uwsgi_trick_chroot_rpmbuild.patch
 Patch1:         uwsgi_fix_rpath.patch
 Patch2:         uwsgi_ruby20_compatibility.patch
@@ -1290,7 +1291,6 @@ mkdir -p %{buildroot}%{_sysconfdir}/uwsgi.d
 mkdir -p %{buildroot}%{_usrsrc}/uwsgi/%{version}
 mkdir -p %{buildroot}%{_includedir}/uwsgi
 mkdir -p %{buildroot}%{_libdir}/uwsgi
-mkdir -p %{buildroot}/run/uwsgi
 %if %{with mono}
 mkdir -p %{buildroot}%{_monogacdir}
 %endif
@@ -1330,6 +1330,7 @@ gacutil -i plugins/mono/uwsgi.dll -f -package uwsgi -root %{buildroot}/usr/lib
 install -D -p -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/uwsgi.ini
 %if %{with systemd}
 install -D -p -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}/uwsgi.service
+install -D -p -m 0644 %{SOURCE7} %{buildroot}%{_tmpfilesdir}/uwsgi.conf
 %else
 install -D -p -m 0755 %{SOURCE6} %{buildroot}%{_initddir}/uwsgi
 %endif
@@ -1404,11 +1405,11 @@ fi
 %config(noreplace) %{_sysconfdir}/uwsgi.ini
 %if %{with systemd}
 %config %{_unitdir}/uwsgi.service
+%{_tmpfilesdir}/uwsgi.conf
 %else
 %{_initddir}/uwsgi
 %endif
 %dir %{_sysconfdir}/uwsgi.d
-%dir /run/uwsgi
 %doc README README.Fedora CHANGELOG
 %{!?_licensedir:%global license %%doc}
 %license LICENSE
@@ -1805,6 +1806,7 @@ fi
 * Mon Jul 09 2018 Carl George <carl@george.computer> - 2.0.17.1-1
 - Latest upstream (rhbz#1549354)
 - Enable uwsgi-plugin-coroae on EL7
+- Use systemd tmpfiles to create /run/uwsgi with group write permissions (rhbz#1427303)
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
