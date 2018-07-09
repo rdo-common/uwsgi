@@ -1302,17 +1302,9 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/uwsgi.d
 mkdir -p %{buildroot}%{_usrsrc}/uwsgi/%{version}
-%if %{with systemd}
-mkdir -p %{buildroot}%{_unitdir}
-%else
-mkdir -p %{buildroot}%{_initddir}
-%endif
-mkdir -p %{buildroot}%{_sbindir}
 mkdir -p %{buildroot}%{_includedir}/uwsgi
 mkdir -p %{buildroot}%{_libdir}/uwsgi
-mkdir -p %{buildroot}%{_javadir}
 mkdir -p %{buildroot}/run/uwsgi
-mkdir -p %{buildroot}%{_httpd_moddir}
 %if %{with mono}
 mkdir -p %{buildroot}%{_monogacdir}
 %endif
@@ -1324,7 +1316,7 @@ cp docs/Changelog-%{majornumber}.%{minornumber}.%{releasenumber}.rst CHANGELOG
 rm -f docs/.gitignore
 echo "%{commit}, i.e. this:" >> README.Fedora
 echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
-install -p -m 0755 uwsgi %{buildroot}%{_sbindir}
+install -D -p -m 0755 uwsgi %{buildroot}%{_sbindir}/uwsgi
 install -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
 install -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python_sitelib}/uwsgidecorators.py
@@ -1344,18 +1336,18 @@ install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_other_sitelib}/uw
 %endif
 %endif
 %if %{with java}
-install -p -m 0644 plugins/jvm/uwsgi.jar %{buildroot}%{_javadir}
+install -D -p -m 0644 plugins/jvm/uwsgi.jar %{buildroot}%{_javadir}/uwsgi.jar
 %endif
 %if %{with mono}
 gacutil -i plugins/mono/uwsgi.dll -f -package uwsgi -root %{buildroot}/usr/lib
 %endif
-install -p -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/uwsgi.ini
+install -D -p -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/uwsgi.ini
 %if %{with systemd}
-install -p -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}/uwsgi.service
+install -D -p -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}/uwsgi.service
 %else
-install -p -m 0755 %{SOURCE6} %{buildroot}%{_initddir}/uwsgi
+install -D -p -m 0755 %{SOURCE6} %{buildroot}%{_initddir}/uwsgi
 %endif
-install -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_moddir}/mod_proxy_uwsgi.so
+install -D -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_moddir}/mod_proxy_uwsgi.so
 
 
 %pre
