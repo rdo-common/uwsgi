@@ -1407,7 +1407,7 @@ fi
 %{_sbindir}/uwsgi
 %config(noreplace) %{_sysconfdir}/uwsgi.ini
 %if %{with systemd}
-%config %{_unitdir}/uwsgi.service
+%{_unitdir}/uwsgi.service
 %{_tmpfilesdir}/uwsgi.conf
 %else
 %{_initddir}/uwsgi
@@ -1815,6 +1815,7 @@ fi
 - Use systemd tmpfiles to create /run/uwsgi with group write permissions (rhbz#1427303)
 - Use /var/run/uwsgi when not using systemd
 - Build with versioned python command
+- Remove %%config from systemd unit file
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
