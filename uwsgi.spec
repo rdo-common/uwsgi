@@ -92,7 +92,7 @@
 # el7 does have greenlet
 %bcond_without greenlet
 # el7 does have perl-PSGI
-# el7 doesn't have perl-Coro
+# el7 does have perl-Coro
 %bcond_without perl
 # el7 can now build glusterfs but only on x86_64
 %ifnarch x86_64
@@ -183,10 +183,7 @@ BuildRequires:  GeoIP-devel, libevent-devel, zlib-devel
 BuildRequires:  openldap-devel, boost-devel
 BuildRequires:  libattr-devel, libxslt-devel
 %if %{with perl}
-BuildRequires:  perl-devel, perl-ExtUtils-Embed
-%if 0%{?fedora} >= 15
-BuildRequires:  perl-Coro
-%endif
+BuildRequires:  perl-devel, perl-ExtUtils-Embed, perl-Coro
 %endif
 %if %{with zeromq}
 BuildRequires:  zeromq-devel
@@ -568,7 +565,6 @@ Requires: perl-PSGI, uwsgi-plugin-common = %{version}-%{release}
 %description -n uwsgi-plugin-psgi
 This package contains the PSGI plugin for uWSGI
 
-%if 0%{?fedora} >= 15
 %package -n uwsgi-plugin-coroae
 Summary:  uWSGI - Plugin for PERL Coro support
 Group:    System Environment/Daemons
@@ -576,7 +572,6 @@ Requires: uwsgi-plugin-common = %{version}-%{release}, uwsgi-plugin-psgi = %{ver
 
 %description -n uwsgi-plugin-coroae
 This package contains the coroae plugin for uWSGI
-%endif
 %endif
 
 %package -n uwsgi-plugin-cheaper-busyness
@@ -1262,9 +1257,7 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin
 %endif
 %if %{with perl}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/psgi fedora
-%if 0%{?fedora} >= 15
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/coroae fedora
-%endif
 %endif
 %if %{with zeromq}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/logzmq fedora
@@ -1554,10 +1547,8 @@ fi
 %files -n uwsgi-plugin-psgi
 %{_libdir}/uwsgi/psgi_plugin.so
 
-%if 0%{?fedora} >= 15
 %files -n uwsgi-plugin-coroae
 %{_libdir}/uwsgi/coroae_plugin.so
-%endif
 %endif
 
 %files -n uwsgi-plugin-cheaper-busyness
@@ -1813,6 +1804,7 @@ fi
 %changelog
 * Mon Jul 09 2018 Carl George <carl@george.computer> - 2.0.17.1-1
 - Latest upstream (rhbz#1549354)
+- Enable uwsgi-plugin-coroae on EL7
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
