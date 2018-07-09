@@ -1291,6 +1291,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/uwsgi.d
 mkdir -p %{buildroot}%{_usrsrc}/uwsgi/%{version}
 mkdir -p %{buildroot}%{_includedir}/uwsgi
 mkdir -p %{buildroot}%{_libdir}/uwsgi
+%if %{without systemd}
+install -d -m 0775 %{buildroot}%{_localstatedir}/run/uwsgi
+%endif
 %if %{with mono}
 mkdir -p %{buildroot}%{_monogacdir}
 %endif
@@ -1340,7 +1343,7 @@ install -D -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_modd
 %pre
 getent group uwsgi >/dev/null || groupadd -r uwsgi
 getent passwd uwsgi >/dev/null || \
-    useradd -r -g uwsgi -d /run/uwsgi -s /sbin/nologin \
+    useradd -r -g uwsgi -d %{!?with_systemd:%{_localstatedir}}/run/uwsgi -s /sbin/nologin \
     -c "uWSGI daemon user" uwsgi
 exit 0
 
@@ -1410,6 +1413,9 @@ fi
 %{_initddir}/uwsgi
 %endif
 %dir %{_sysconfdir}/uwsgi.d
+%if %{without systemd}
+%attr(0775,uwsgi,uwsgi) %dir %{_localstatedir}/run/uwsgi
+%endif
 %doc README README.Fedora CHANGELOG
 %{!?_licensedir:%global license %%doc}
 %license LICENSE
@@ -1807,6 +1813,7 @@ fi
 - Latest upstream (rhbz#1549354)
 - Enable uwsgi-plugin-coroae on EL7
 - Use systemd tmpfiles to create /run/uwsgi with group write permissions (rhbz#1427303)
+- Use /var/run/uwsgi when not using systemd
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
