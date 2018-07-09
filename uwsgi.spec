@@ -1223,7 +1223,7 @@ sed -in "s/mono, //" buildconf/fedora.ini
 
 
 %build
-CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" python uwsgiconfig.py --build fedora.ini
+CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --build fedora.ini
 %if %{with python3}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/python fedora python%{python3_pkgversion}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_pkgversion}_gevent
@@ -1234,55 +1234,55 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_other_pkgversion}_gevent
 %endif
 %if %{with mongodblibs}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/mongodblog fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable -std=gnu++11 -Wno-error" python uwsgiconfig.py --plugin plugins/stats_pusher_mongodb fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mongodblog fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable -std=gnu++11 -Wno-error" %{__python2} uwsgiconfig.py --plugin plugins/stats_pusher_mongodb fedora
 %endif
 %if %{with mono}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/mono fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mono fedora
 %endif
 %if %{with v8}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/v8 fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/v8 fedora
 %endif
 %if %{with go}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/gccgo fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/gccgo fedora
 %endif
 %if %{with ruby19}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/fiber fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/rbthreads fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/fiber fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/rbthreads fedora
 %endif
 %if %{with systemd}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/systemd_logger fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/systemd_logger fedora
 %endif
 %if %{with tuntap}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/tuntap fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/tuntap fedora
 %endif
 %if %{with perl}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/psgi fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/coroae fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/psgi fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/coroae fedora
 %endif
 %if %{with zeromq}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/logzmq fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/mongrel2 fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/logzmq fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mongrel2 fedora
 %endif
 %if %{with greenlet}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/greenlet fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/greenlet fedora
 %if %{with python3}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/greenlet fedora python%{python3_pkgversion}_greenlet
 %endif
 %endif
 %if %{with glusterfs}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/glusterfs fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/glusterfs fedora
 %endif
 %if %{with gridfs}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/gridfs fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/gridfs fedora
 %endif
 %if %{with java}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/jvm fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/jwsgi fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/ring fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/jvm fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/jwsgi fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/ring fedora
 %endif
 %if %{with tcp_wrappers}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" python uwsgiconfig.py --plugin plugins/router_access fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/router_access fedora
 %endif
 %{_httpd_apxs} -Wc,-Wall -Wl -c apache2/mod_proxy_uwsgi.c
 
@@ -1814,6 +1814,7 @@ fi
 - Enable uwsgi-plugin-coroae on EL7
 - Use systemd tmpfiles to create /run/uwsgi with group write permissions (rhbz#1427303)
 - Use /var/run/uwsgi when not using systemd
+- Build with versioned python command
 
 * Tue Jul 03 2018 Petr Pisar <ppisar@redhat.com> - 2.0.16-7
 - Perl 5.28 rebuild
