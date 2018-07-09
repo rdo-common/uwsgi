@@ -1199,15 +1199,8 @@ Fully Apache API compliant proxy module
 %prep
 %setup -q
 cp -p %{SOURCE1} buildconf/
-%if %{with systemd}
-cp -p %{SOURCE2} uwsgi.service
-%else
-cp -p %{SOURCE6} uwsgi.init
-%endif
-cp -p %{SOURCE3} uwsgi.ini
-cp -p %{SOURCE4} uwsgi-docs.tar.gz
+echo "plugin_dir = %{_libdir}/uwsgi" >> buildconf/fedora.ini
 cp -p %{SOURCE5} README.Fedora
-echo "plugin_dir = %{_libdir}/uwsgi" >> buildconf/$(basename %{SOURCE1})
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -1324,7 +1317,7 @@ mkdir -p %{buildroot}%{_httpd_moddir}
 mkdir -p %{buildroot}%{_monogacdir}
 %endif
 mkdir docs
-tar -C docs/ --strip-components=1 -xvzf uwsgi-docs.tar.gz
+tar -C docs/ --strip-components=1 -xvzf %{SOURCE4}
 tar -C %{buildroot}%{_usrsrc}/uwsgi/%{version} --strip-components=1 -xvzf %{SOURCE0}
 cp %{SOURCE1} %{buildroot}%{_usrsrc}/uwsgi/%{version}/buildconf/
 cp docs/Changelog-%{majornumber}.%{minornumber}.%{releasenumber}.rst CHANGELOG
@@ -1356,11 +1349,11 @@ install -p -m 0644 plugins/jvm/uwsgi.jar %{buildroot}%{_javadir}
 %if %{with mono}
 gacutil -i plugins/mono/uwsgi.dll -f -package uwsgi -root %{buildroot}/usr/lib
 %endif
-install -p -m 0644 uwsgi.ini %{buildroot}%{_sysconfdir}/uwsgi.ini
+install -p -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/uwsgi.ini
 %if %{with systemd}
-install -p -m 0644 uwsgi.service %{buildroot}%{_unitdir}/uwsgi.service
+install -p -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}/uwsgi.service
 %else
-install -p -m 0755 uwsgi.init %{buildroot}%{_initddir}/uwsgi
+install -p -m 0755 %{SOURCE6} %{buildroot}%{_initddir}/uwsgi
 %endif
 install -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_moddir}/mod_proxy_uwsgi.so
 
