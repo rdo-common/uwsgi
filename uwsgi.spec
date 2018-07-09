@@ -1333,38 +1333,38 @@ cp docs/Changelog-%{majornumber}.%{minornumber}.%{releasenumber}.rst CHANGELOG
 rm -f docs/.gitignore
 echo "%{commit}, i.e. this:" >> README.Fedora
 echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
-%{__install} -p -m 0755 uwsgi %{buildroot}%{_sbindir}
-%{__install} -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
-%{__install} -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
-%{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python_sitelib}/uwsgidecorators.py
+install -p -m 0755 uwsgi %{buildroot}%{_sbindir}
+install -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
+install -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
+install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
 %py_byte_compile %{__python} %{buildroot}%{python_sitelib}/
 %endif
 %if %{with python3}
-%{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
+install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
 %py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/
 %endif
 %endif
 %if %{with python3_other}
-%{__install} -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_other_sitelib}/uwsgidecorators.py
+install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_other_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
 %py_byte_compile %{__python3_other} %{buildroot}%{python3_other_sitelib}/
 %endif
 %endif
 %if %{with java}
-%{__install} -p -m 0644 plugins/jvm/uwsgi.jar %{buildroot}%{_javadir}
+install -p -m 0644 plugins/jvm/uwsgi.jar %{buildroot}%{_javadir}
 %endif
 %if %{with mono}
 gacutil -i plugins/mono/uwsgi.dll -f -package uwsgi -root %{buildroot}/usr/lib
 %endif
-%{__install} -p -m 0644 uwsgi.ini %{buildroot}%{_sysconfdir}/uwsgi.ini
+install -p -m 0644 uwsgi.ini %{buildroot}%{_sysconfdir}/uwsgi.ini
 %if %{with systemd}
-%{__install} -p -m 0644 uwsgi.service %{buildroot}%{_unitdir}/uwsgi.service
+install -p -m 0644 uwsgi.service %{buildroot}%{_unitdir}/uwsgi.service
 %else
-%{__install} -p -m 0755 uwsgi.init %{buildroot}%{_initddir}/uwsgi
+install -p -m 0755 uwsgi.init %{buildroot}%{_initddir}/uwsgi
 %endif
-%{__install} -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_moddir}/mod_proxy_uwsgi.so
+install -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_moddir}/mod_proxy_uwsgi.so
 
 
 %pre
