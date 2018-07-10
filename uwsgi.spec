@@ -1425,18 +1425,15 @@ fi
 %{_usrsrc}/uwsgi
 
 %files -n python2-uwsgidecorators
-%defattr(-,root,root,-)
 %{python_sitelib}/*
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-uwsgidecorators
-%defattr(-,root,root,-)
 %{python3_sitelib}/*
 %endif
 
 %if %{with python3_other}
 %files -n python%{python3_other_pkgversion}-uwsgidecorators
-%defattr(-,root,root,-)
 %{python3_other_sitelib}/*
 %endif
 
