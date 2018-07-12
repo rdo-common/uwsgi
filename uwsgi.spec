@@ -119,7 +119,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1308,9 +1308,9 @@ echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
 install -D -p -m 0755 uwsgi %{buildroot}%{_sbindir}/uwsgi
 install -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
 install -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
-install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python_sitelib}/uwsgidecorators.py
+install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python2_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
-%py_byte_compile %{__python} %{buildroot}%{python_sitelib}/
+%py_byte_compile %{__python2} %{buildroot}%{python2_sitelib}/
 %endif
 %if %{with python3}
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
@@ -1424,7 +1424,7 @@ fi
 %{_usrsrc}/uwsgi
 
 %files -n python2-uwsgidecorators
-%{python_sitelib}/*
+%{python2_sitelib}/*
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-uwsgidecorators
@@ -1805,6 +1805,9 @@ fi
 
 
 %changelog
+* Thu Jul 12 2018 Carl George <carl@george.computer> - 2.0.17.1-2
+- Make python2-uwsgidecorators own the right files (rhbz#1600721)
+
 * Mon Jul 09 2018 Carl George <carl@george.computer> - 2.0.17.1-1
 - Latest upstream (rhbz#1549354)
 - Enable uwsgi-plugin-coroae on EL7
