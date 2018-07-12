@@ -1417,7 +1417,6 @@ fi
 %attr(0775,uwsgi,uwsgi) %dir %{_localstatedir}/run/uwsgi
 %endif
 %doc README README.Fedora CHANGELOG
-%{!?_licensedir:%global license %%doc}
 %license LICENSE
 
 %files -n uwsgi-devel
