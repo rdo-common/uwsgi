@@ -1310,18 +1310,18 @@ install -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
 install -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python2_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
-%py_byte_compile %{__python2} %{buildroot}%{python2_sitelib}/
+%py_byte_compile %{__python2} %{buildroot}%{python2_sitelib}/uwsgidecorators.py
 %endif
 %if %{with python3}
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
-%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/uwsgidecorators.py
 %endif
 %endif
 %if %{with python3_other}
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_other_sitelib}/uwsgidecorators.py
 %if %{manual_py_compile} == 1
-%py_byte_compile %{__python3_other} %{buildroot}%{python3_other_sitelib}/
+%py_byte_compile %{__python3_other} %{buildroot}%{python3_other_sitelib}/uwsgidecorators.py
 %endif
 %endif
 %if %{with java}
@@ -1424,16 +1424,18 @@ fi
 %{_usrsrc}/uwsgi
 
 %files -n python2-uwsgidecorators
-%{python2_sitelib}/*
+%{python2_sitelib}/uwsgidecorators.py*
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-uwsgidecorators
-%{python3_sitelib}/*
+%{python3_sitelib}/uwsgidecorators.py
+%{python3_sitelib}/__pycache__/uwsgidecorators.cpython-%{python3_version_nodots}*.py*
 %endif
 
 %if %{with python3_other}
 %files -n python%{python3_other_pkgversion}-uwsgidecorators
-%{python3_other_sitelib}/*
+%{python3_other_sitelib}/uwsgidecorators.py
+%{python3_other_sitelib}/__pycache__/uwsgidecorators.cpython-%{python3_other_version_nodots}*.py*
 %endif
 
 %files -n uwsgi-docs
@@ -1807,6 +1809,7 @@ fi
 %changelog
 * Thu Jul 12 2018 Carl George <carl@george.computer> - 2.0.17.1-2
 - Make python2-uwsgidecorators own the right files (rhbz#1600721)
+- Be more explicit with uwsgidecorators files
 
 * Mon Jul 09 2018 Carl George <carl@george.computer> - 2.0.17.1-1
 - Latest upstream (rhbz#1549354)
