@@ -16,7 +16,7 @@
 %bcond_without ruby19
 %bcond_without tuntap
 %bcond_without zeromq
-%bcond_without greenlet
+%bcond_without python2_greenlet
 %bcond_without perl
 %bcond_without glusterfs
 %bcond_without java
@@ -89,8 +89,12 @@
 %bcond_without python3_other
 # el7 doesn't have zeromq
 %bcond_with zeromq
-# el7 does have greenlet, but only on x86_64
-%bcond_with greenlet
+# el7 does have python-greenlet, but only on x86_64
+%ifarch x86_64
+%bcond_without python2_greenlet
+%else
+%bcond_with python2_greenlet
+%endif
 # el7 does have perl-PSGI
 # el7 does have perl-Coro
 %bcond_without perl
@@ -119,7 +123,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -153,11 +157,11 @@ BuildRequires:  python%{python3_pkgversion}-devel
 %if %{with python3_other}
 BuildRequires:  python%{python3_other_pkgversion}-devel
 %endif
-%if %{with greenlet}
+%if %{with python2_greenlet}
 BuildRequires:  python-greenlet-devel
+%endif
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-greenlet-devel
-%endif
 %endif
 %if %{with glusterfs}
 BuildRequires:  glusterfs-devel, glusterfs-api-devel
@@ -678,7 +682,7 @@ Requires: uwsgi-plugin-common = %{version}-%{release}, glusterfs-api
 This package contains the glusterfs plugin for uWSGI
 %endif
 
-%if %{with greenlet}
+%if %{with python2_greenlet}
 %package -n uwsgi-plugin-python2-greenlet
 Summary:  uWSGI - Plugin for Python 2 Greenlet support
 Group:    System Environment/Daemons
@@ -687,6 +691,7 @@ Obsoletes: uwsgi-plugin-greenlet < 2.0.16-4
 
 %description -n uwsgi-plugin-python2-greenlet
 This package contains the Python 2 greenlet plugin for uWSGI
+%endif
 
 %if %{with python3}
 %package -n uwsgi-plugin-python%{python3_pkgversion}-greenlet
@@ -696,7 +701,6 @@ Requires: python%{python3_pkgversion}-greenlet, uwsgi-plugin-python%{python3_pkg
 
 %description -n uwsgi-plugin-python%{python3_pkgversion}-greenlet
 This package contains the Python %{python3_version} greenlet plugin for uWSGI
-%endif
 %endif
 
 %if %{with gridfs}
@@ -1264,11 +1268,11 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/logzmq fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mongrel2 fedora
 %endif
-%if %{with greenlet}
+%if %{with python2_greenlet}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/greenlet fedora
+%endif
 %if %{with python3}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/greenlet fedora python%{python3_pkgversion}_greenlet
-%endif
 %endif
 %if %{with glusterfs}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/glusterfs fedora
@@ -1602,14 +1606,14 @@ fi
 %{_libdir}/uwsgi/glusterfs_plugin.so
 %endif
 
-%if %{with greenlet}
+%if %{with python2_greenlet}
 %files -n uwsgi-plugin-python2-greenlet
 %{_libdir}/uwsgi/greenlet_plugin.so
+%endif
 
 %if %{with python3}
 %files -n uwsgi-plugin-python%{python3_pkgversion}-greenlet
 %{_libdir}/uwsgi/python%{python3_pkgversion}_greenlet_plugin.so
-%endif
 %endif
 
 %if %{with gridfs}
@@ -1807,6 +1811,11 @@ fi
 
 
 %changelog
+* Sat Jul 14 2018 Tadej Janež <tadej.j@nez.si> - 2.0.17.1-3
+- Re-enable greenlet plugin on EL7:
+  - Python 3 version is always built
+  - Python 2 version is only built on x86_64
+
 * Thu Jul 12 2018 Carl George <carl@george.computer> - 2.0.17.1-2
 - Make python2-uwsgidecorators own the right files (rhbz#1600721)
 - Be more explicit with uwsgidecorators files
