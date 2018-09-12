@@ -20,6 +20,9 @@
 %bcond_without perl
 %bcond_without glusterfs
 %bcond_without java
+# Fedora httpd includes mod_proxy_uwsgi
+# https://bugzilla.redhat.com/show_bug.cgi?id=1574335
+%bcond_with mod_proxy_uwsgi
 #mono
 %ifnarch %{mono_arches}
 %bcond_with mono
@@ -68,6 +71,8 @@
 # el6 doesn't have perl-PSGI
 # el6 does have perl-Coro
 %bcond_with perl
+# el6 httpd does not include mod_proxy_uwsgi
+%bcond_without mod_proxy_uwsgi
 # this fails in el not sure why
 %bcond_with gridfs
 %bcond_with tuntap
@@ -98,6 +103,8 @@
 # el7 does have perl-PSGI
 # el7 does have perl-Coro
 %bcond_without perl
+# el7 httpd does not include mod_proxy_uwsgi
+%bcond_without mod_proxy_uwsgi
 # el7 can now build glusterfs but only on x86_64
 %ifnarch x86_64
 %bcond_with glusterfs
@@ -123,7 +130,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
 License:        GPLv2 with exceptions
@@ -1181,6 +1188,7 @@ This package contains the xmldir router plugin for uWSGI
 
 # The rest
 
+%if %{with mod_proxy_uwsgi}
 %package -n mod_proxy_uwsgi
 Summary:  uWSGI - Apache2 proxy module
 Group:    System Environment/Daemons
@@ -1188,6 +1196,7 @@ Requires: uwsgi = %{version}-%{release}, httpd
 
 %description -n mod_proxy_uwsgi
 Fully Apache API compliant proxy module
+%endif
 
 
 %prep
@@ -1288,7 +1297,10 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --
 %if %{with tcp_wrappers}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/router_access fedora
 %endif
+%if %{with mod_proxy_uwsgi}
 %{_httpd_apxs} -Wc,-Wall -Wl -c apache2/mod_proxy_uwsgi.c
+%endif
+
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/uwsgi.d
@@ -1341,7 +1353,9 @@ install -D -p -m 0644 %{SOURCE7} %{buildroot}%{_tmpfilesdir}/uwsgi.conf
 %else
 install -D -p -m 0755 %{SOURCE6} %{buildroot}%{_initddir}/uwsgi
 %endif
+%if %{with mod_proxy_uwsgi}
 install -D -p -m 0755 apache2/.libs/mod_proxy_uwsgi.so %{buildroot}%{_httpd_moddir}/mod_proxy_uwsgi.so
+%endif
 
 
 %pre
@@ -1806,11 +1820,16 @@ fi
 
 # The rest
 
+%if %{with mod_proxy_uwsgi}
 %files -n mod_proxy_uwsgi
 %{_httpd_moddir}/mod_proxy_uwsgi.so
+%endif
 
 
 %changelog
+* Wed Sep 12 2018 Carl George <carl@george.computer> - 2.0.17.1-4
+- Drop mod_proxy_uwsgi subpackage on Fedora, as this module now provided by httpd rhbz#1574335
+
 * Sat Jul 14 2018 Tadej Janež <tadej.j@nez.si> - 2.0.17.1-3
 - Re-enable greenlet plugin on EL7:
   - Python 3 version is always built
