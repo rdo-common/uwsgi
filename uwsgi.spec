@@ -130,7 +130,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -265,6 +265,7 @@ Requires:   uwsgi = %{version}-%{release}
 This package contains the development header files and libraries
 for uWSGI extensions
 
+%if 0%{?fedora} < 30
 %package -n python2-uwsgidecorators
 Summary:        Python 2 decorators providing access to the uwsgi API
 Requires:       uwsgi = %{version}-%{release}
@@ -273,6 +274,7 @@ Obsoletes:      python-uwsgidecorators < 2.0.16-4
 
 %description -n python2-uwsgidecorators
 The uwsgidecorators Python 2 module provides higher-level access to the uWSGI API.
+%endif
 
 %if %{with python3}
 %package -n python%{python3_pkgversion}-uwsgidecorators
@@ -1224,7 +1226,9 @@ echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
 install -D -p -m 0755 uwsgi %{buildroot}%{_sbindir}/uwsgi
 install -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
 install -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
+%if 0%{?fedora} < 30
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python2_sitelib}/uwsgidecorators.py
+%endif
 %if %{manual_py_compile} == 1
 %py_byte_compile %{__python2} %{buildroot}%{python2_sitelib}/uwsgidecorators.py
 %endif
@@ -1341,8 +1345,10 @@ fi
 %{_includedir}/uwsgi
 %{_usrsrc}/uwsgi
 
+%if 0%{?fedora} < 30
 %files -n python2-uwsgidecorators
 %{python2_sitelib}/uwsgidecorators.py*
+%endif
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-uwsgidecorators
@@ -1727,6 +1733,9 @@ fi
 
 
 %changelog
+* Fri Nov 02 2018 Carl George <carl@george.computer> - 2.0.17.1-5
+- Don't build python2-uwsgidecorators on F30+
+
 * Wed Sep 12 2018 Carl George <carl@george.computer> - 2.0.17.1-4
 - Drop mod_proxy_uwsgi subpackage on Fedora, as this module now provided by httpd rhbz#1574335
 
