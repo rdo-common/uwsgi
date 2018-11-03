@@ -216,7 +216,11 @@ BuildRequires:  v8-devel
 %endif
 %endif
 %if %{with mongodblibs}
+%if 0%{?fedora} >= 30
+BuildRequires:  mongo-cxx-driver-legacy-devel
+%else
 BuildRequires:  libmongodb-devel
+%endif
 %endif
 
 %if 0%{?fedora} >= 28
@@ -1735,6 +1739,7 @@ fi
 %changelog
 * Fri Nov 02 2018 Carl George <carl@george.computer> - 2.0.17.1-5
 - Don't build python2-uwsgidecorators on F30+
+- BuildRequire mongo-cxx-driver-legacy-devel on F30+
 
 * Wed Sep 12 2018 Carl George <carl@george.computer> - 2.0.17.1-4
 - Drop mod_proxy_uwsgi subpackage on Fedora, as this module now provided by httpd rhbz#1574335
