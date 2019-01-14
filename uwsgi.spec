@@ -130,7 +130,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -1737,6 +1737,9 @@ fi
 
 
 %changelog
+* Mon Jan 14 2019 Björn Esser <besser82@fedoraproject.org> - 2.0.17.1-6
+- Rebuilt for libcrypt.so.2 (#1666033)
+
 * Fri Nov 02 2018 Carl George <carl@george.computer> - 2.0.17.1-5
 - Don't build python2-uwsgidecorators on F30+
 - BuildRequire mongo-cxx-driver-legacy-devel on F30+
