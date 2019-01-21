@@ -130,7 +130,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -1737,6 +1737,9 @@ fi
 
 
 %changelog
+* Mon Jan 21 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.0.17.1-7
+- F-30: rebuild against ruby26
+
 * Mon Jan 14 2019 Björn Esser <besser82@fedoraproject.org> - 2.0.17.1-6
 - Rebuilt for libcrypt.so.2 (#1666033)
 
