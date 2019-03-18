@@ -130,7 +130,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -1737,6 +1737,9 @@ fi
 
 
 %changelog
+* Mon Mar 18 2019 Remi Collet <remi@fedoraproject.org> - 2.0.17.1-9
+- rebuild for libargon2 new soname
+
 * Sun Feb 03 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.17.1-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
