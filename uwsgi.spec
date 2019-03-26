@@ -37,12 +37,8 @@
 %else
 %bcond_with mongodblibs
 %endif
-# v8
-%ifnarch %{ix86} x86_64 %{arm}
+# v8-314 retired
 %bcond_with v8
-%else
-%bcond_without v8
-%endif
 #mongodblibs dependency
 %if %{without mongodblibs}
 %bcond_with gridfs
@@ -1730,6 +1726,7 @@ fi
 %changelog
 * Tue Mar 26 2019 Carl George <carl@george.computer> - 2.0.17.1-10
 - Disable jvm plugin on Fedora and EL6 due to javapackages-tools retirement (apache-ivy orphanage)
+- Disable v8 plugin on Fedora due to v8-314 retirement
 
 * Mon Mar 18 2019 Remi Collet <remi@fedoraproject.org> - 2.0.17.1-9
 - rebuild for libargon2 new soname
