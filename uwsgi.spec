@@ -31,12 +31,8 @@
 %bcond_without mono
 %endif
 # mongodblibs
-# mongodb is little endian only
-%ifnarch ppc ppc64 s390 s390x
-%bcond_without mongodblibs
-%else
+# mongo-cxx-driver-legacy broken in rawhide rhbz#1675407
 %bcond_with mongodblibs
-%endif
 # v8-314 retired
 %bcond_with v8
 #mongodblibs dependency
@@ -205,7 +201,7 @@ BuildRequires:  v8-devel
 %if 0%{?fedora} >= 30
 BuildRequires:  mongo-cxx-driver-legacy-devel
 %else
-BuildRequires:  libmongodb-devel
+BuildRequires:  mongo-cxx-driver-devel
 %endif
 %endif
 
@@ -1727,6 +1723,7 @@ fi
 * Tue Mar 26 2019 Carl George <carl@george.computer> - 2.0.17.1-10
 - Disable jvm plugin on Fedora and EL6 due to javapackages-tools retirement (apache-ivy orphanage)
 - Disable v8 plugin on Fedora due to v8-314 retirement
+- Disable mongo plugins on Fedora due to mongo-cxx-driver-legacy being broken in rawhide
 
 * Mon Mar 18 2019 Remi Collet <remi@fedoraproject.org> - 2.0.17.1-9
 - rebuild for libargon2 new soname
