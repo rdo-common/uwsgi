@@ -19,7 +19,8 @@
 %bcond_without python2_greenlet
 %bcond_without perl
 %bcond_without glusterfs
-%bcond_without java
+# javapackages-tools retired (apache-ivy orphanage)
+%bcond_with java
 # Fedora httpd includes mod_proxy_uwsgi
 # https://bugzilla.redhat.com/show_bug.cgi?id=1574335
 %bcond_with mod_proxy_uwsgi
@@ -53,12 +54,8 @@
 
 # Conditionally disable some things in epel6
 %if 0%{?rhel} == 6
-# el6 ppc64 doesn't hava java
-%ifarch ppc64
+# javapackages-tools retired in epel (apache-ivy orphanage)
 %bcond_with java
-%else
-%bcond_without java
-%endif
 # el6 doesn't ship with systemd
 %bcond_with systemd
 # el6 doesn't have go
@@ -130,7 +127,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -180,7 +177,7 @@ BuildRequires:  compat-openssl10-devel
 BuildRequires:  openssl-devel
 %endif
 BuildRequires:  bzip2-devel, gmp-devel, pam-devel
-BuildRequires:  java-devel, sqlite-devel, libcap-devel
+BuildRequires:  sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, libcurl-devel
 BuildRequires:  gloox-devel, libstdc++-devel
 BuildRequires:  GeoIP-devel, libevent-devel, zlib-devel
@@ -675,6 +672,7 @@ This package contains the gridfs plugin for uWSGI
 %if %{with java}
 %package -n uwsgi-plugin-jvm
 Summary:  uWSGI - Plugin for JVM support
+BuildRequires: java-devel
 Requires: uwsgi-plugin-common = %{version}-%{release}, java-headless, jpackage-utils
 
 %description -n uwsgi-plugin-jvm
@@ -1730,6 +1728,9 @@ fi
 
 
 %changelog
+* Tue Mar 26 2019 Carl George <carl@george.computer> - 2.0.17.1-10
+- Disable jvm plugin on Fedora and EL6 due to javapackages-tools retirement (apache-ivy orphanage)
+
 * Mon Mar 18 2019 Remi Collet <remi@fedoraproject.org> - 2.0.17.1-9
 - rebuild for libargon2 new soname
 
