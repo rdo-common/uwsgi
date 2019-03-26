@@ -25,10 +25,11 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1574335
 %bcond_with mod_proxy_uwsgi
 #mono
-%ifnarch %{mono_arches}
-%bcond_with mono
-%else
+# normally we could use %%{mono_arches} but it's busted rhbz#1686983
+%ifarch %{ix86} x86_64 %{arm} aarch64 s390x
 %bcond_without mono
+%else
+%bcond_with mono
 %endif
 # mongodblibs
 # mongo-cxx-driver-legacy broken in rawhide rhbz#1675407
@@ -1724,6 +1725,7 @@ fi
 - Disable jvm plugin on Fedora and EL6 due to javapackages-tools retirement (apache-ivy orphanage)
 - Disable v8 plugin on Fedora due to v8-314 retirement
 - Disable mongo plugins on Fedora due to mongo-cxx-driver-legacy being broken in rawhide
+- Disable mono plugins on ppc64le because mono-4.8.0-17 dropped that arch rhbz#1686983
 
 * Mon Mar 18 2019 Remi Collet <remi@fedoraproject.org> - 2.0.17.1-9
 - rebuild for libargon2 new soname
