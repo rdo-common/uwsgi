@@ -180,13 +180,6 @@ BuildRequires:  compat-openssl10-devel
 BuildRequires:  openssl-devel
 %endif
 BuildRequires:  bzip2-devel, gmp-devel, pam-devel
-%ifarch %arm
-# FIXME: explicitly specify java package not to use
-# java-1.8.0-openjdk-aarch32, which provides client/libjvm.so
-# but not server/libjvm.so, which uwsgi requires
-BuildRequires:  java-1.8.0-openjdk-headless
-BuildRequires:  java-1.8.0-openjdk-devel
-%endif
 BuildRequires:  java-devel, sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, libcurl-devel
 BuildRequires:  gloox-devel, libstdc++-devel
