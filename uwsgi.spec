@@ -25,8 +25,7 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1574335
 %bcond_with mod_proxy_uwsgi
 #mono
-# normally we could use %%{mono_arches} but it's busted rhbz#1686983
-%ifarch %{ix86} x86_64 %{arm} aarch64 s390x
+%ifarch %{mono_arches}
 %bcond_without mono
 %else
 %bcond_with mono
@@ -120,7 +119,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -1721,6 +1720,9 @@ fi
 
 
 %changelog
+* Wed Apr 03 2019 Carl George <carl@george.computer> - 2.0.17.1-11
+- Re-enable mono plugins on ppc64le
+
 * Tue Mar 26 2019 Carl George <carl@george.computer> - 2.0.17.1-10
 - Disable jvm plugin on Fedora and EL6 due to javapackages-tools retirement (apache-ivy orphanage)
 - Disable v8 plugin on Fedora due to v8-314 retirement
