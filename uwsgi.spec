@@ -119,7 +119,7 @@
 
 Name:           uwsgi
 Version:        2.0.17.1
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Fast, self-healing, application container server
 License:        GPLv2 with exceptions
 URL:            https://github.com/unbit/uwsgi
@@ -1720,6 +1720,9 @@ fi
 
 
 %changelog
+* Fri May 31 2019 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.17.1-12
+- Perl 5.30 rebuild
+
 * Wed Apr 03 2019 Carl George <carl@george.computer> - 2.0.17.1-11
 - Re-enable mono plugins on ppc64le
 
