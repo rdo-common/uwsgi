@@ -1,5 +1,5 @@
 # Documentation sources:
-%global commit 32a8f7304d0e705d36dd9644707552939c67f547
+%global commit 8d868eadfb460785a735030271afa233ac854763
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global docrepo uwsgi-docs
 
@@ -118,11 +118,14 @@
 %endif
 
 Name:           uwsgi
-Version:        2.0.17.1
-Release:        12%{?dist}
+Version:        2.0.18
+Release:        1%{?dist}
 Summary:        Fast, self-healing, application container server
-License:        GPLv2 with exceptions
+# uwsgi is licensed under GPLv2 with a linking exception
+# docs are licensed under MIT
+License:        GPLv2 with exceptions and MIT
 URL:            https://github.com/unbit/uwsgi
+
 Source0:        http://projects.unbit.it/downloads/uwsgi-%{version}.tar.gz
 Source1:        fedora.ini
 Source2:        uwsgi.service
@@ -131,6 +134,7 @@ Source4:        https://github.com/unbit/%{docrepo}/archive/%{commit}/%{docrepo}
 Source5:        README.Fedora
 Source6:        uwsgi.init
 Source7:        uwsgi.tmpfiles
+
 Patch0:         uwsgi_trick_chroot_rpmbuild.patch
 Patch1:         uwsgi_fix_rpath.patch
 Patch2:         uwsgi_ruby20_compatibility.patch
@@ -141,6 +145,7 @@ Patch6:         uwsgi_v8-314_compatibility.patch
 Patch7:         uwsgi_fix_mono.patch
 # https://github.com/unbit/uwsgi/pull/1772
 Patch9:         uwsgi-2.0.16-glfs.patch
+
 BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
 BuildRequires:  libyaml-devel, ruby-devel
 %if %{with tcp_wrappers}
@@ -1720,6 +1725,9 @@ fi
 
 
 %changelog
+* Wed Jun 19 2019 Carl George <carl@george.computer> - 2.0.18-1
+- Latest upstream
+
 * Fri May 31 2019 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.17.1-12
 - Perl 5.30 rebuild
 
