@@ -10,13 +10,14 @@
 %if 0%{?fedora}
 %bcond_without systemd
 %bcond_without go
+%if 0%{?fedora} < 31
+%bcond_without python2
+%bcond_without python2_greenlet
+%endif
 %bcond_without python3
-# Fedora doesn't have two versions of python3
-%bcond_with python3_other
 %bcond_without ruby19
 %bcond_without tuntap
 %bcond_without zeromq
-%bcond_without python2_greenlet
 %bcond_without perl
 %bcond_without glusterfs
 # javapackages-tools retired (apache-ivy orphanage)
@@ -52,9 +53,8 @@
 %bcond_with systemd
 # el6 doesn't have go
 %bcond_with go
-# el6 doesn't have python3
-%bcond_with python3
-%bcond_with python3_other
+%bcond_without python2
+%bcond_without python2_greenlet
 # el6 ships with ruby 1.8 but fiberloop/rbthreads needs 1.9
 %bcond_with ruby19
 # el6 doesn't have perl-PSGI
@@ -77,17 +77,14 @@
 %bcond_without java
 # el7 does have systemd
 %bcond_without systemd
-# el7 does have python3
+%bcond_without python2
 %bcond_without python3
-# el7 has another version of python3
 %bcond_without python3_other
 # el7 doesn't have zeromq
 %bcond_with zeromq
 # el7 does have python-greenlet, but only on x86_64
 %ifarch x86_64
 %bcond_without python2_greenlet
-%else
-%bcond_with python2_greenlet
 %endif
 # el7 does have perl-PSGI
 # el7 does have perl-Coro
@@ -146,22 +143,23 @@ Patch7:         uwsgi_fix_mono.patch
 # https://github.com/unbit/uwsgi/pull/1772
 Patch9:         uwsgi-2.0.16-glfs.patch
 
-BuildRequires:  curl,  python2-devel, libxml2-devel, libuuid-devel, jansson-devel
+BuildRequires:  curl, libxml2-devel, libuuid-devel, jansson-devel
 BuildRequires:  libyaml-devel, ruby-devel
 %if %{with tcp_wrappers}
 BuildRequires:  tcp_wrappers-devel
 %endif
-%if %{with python3}
-BuildRequires:  python%{python3_pkgversion}-devel
-%endif
-%if %{with python3_other}
-BuildRequires:  python%{python3_other_pkgversion}-devel
-%endif
+%if %{with python2}
+BuildRequires:  python2-devel
 %if %{with python2_greenlet}
 BuildRequires:  python-greenlet-devel
 %endif
+%endif
 %if %{with python3}
+BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-greenlet-devel
+%endif
+%if %{with python3_other}
+BuildRequires:  python%{python3_other_pkgversion}-devel
 %endif
 %if %{with glusterfs}
 BuildRequires:  glusterfs-devel, glusterfs-api-devel
@@ -252,7 +250,7 @@ Requires:   uwsgi = %{version}-%{release}
 This package contains the development header files and libraries
 for uWSGI extensions
 
-%if 0%{?fedora} < 30
+%if %{with python2}
 %package -n python2-uwsgidecorators
 Summary:        Python 2 decorators providing access to the uwsgi API
 Requires:       uwsgi = %{version}-%{release}
@@ -599,6 +597,7 @@ Requires: uwsgi-plugin-common = %{version}-%{release}, GeoIP
 %description -n uwsgi-plugin-geoip
 This package contains the geoip plugin for uWSGI
 
+%if %{with python2}
 %package -n uwsgi-plugin-python2-gevent
 Summary:  uWSGI - Plugin for Python 2 GEvent support
 Requires: uwsgi-plugin-python2 = %{version}-%{release}, libevent
@@ -606,6 +605,7 @@ Obsoletes: uwsgi-plugin-gevent < 2.0.16-4
 
 %description -n uwsgi-plugin-python2-gevent
 This package contains the Python 2 gevent plugin for uWSGI
+%endif
 
 %if %{with python3}
 %package -n uwsgi-plugin-python%{python3_pkgversion}-gevent
@@ -634,6 +634,7 @@ Requires: uwsgi-plugin-common = %{version}-%{release}, glusterfs-api
 This package contains the glusterfs plugin for uWSGI
 %endif
 
+%if %{with python2}
 %if %{with python2_greenlet}
 %package -n uwsgi-plugin-python2-greenlet
 Summary:  uWSGI - Plugin for Python 2 Greenlet support
@@ -642,6 +643,7 @@ Obsoletes: uwsgi-plugin-greenlet < 2.0.16-4
 
 %description -n uwsgi-plugin-python2-greenlet
 This package contains the Python 2 greenlet plugin for uWSGI
+%endif
 %endif
 
 %if %{with python3}
@@ -746,6 +748,7 @@ Requires: python2, uwsgi-plugin-common = %{version}-%{release}
 %description -n uwsgi-plugin-pty
 This package contains the pty plugin for uWSGI
 
+%if %{with python2}
 %package -n uwsgi-plugin-python2
 Summary:  uWSGI - Plugin for Python 2 support
 Requires: python2, uwsgi-plugin-common = %{version}-%{release}
@@ -753,6 +756,7 @@ Obsoletes: uwsgi-plugin-python < 2.0.16-4
 
 %description -n uwsgi-plugin-python2
 This package contains the Python 2 plugin for uWSGI
+%endif
 
 %if %{with python3}
 %package -n uwsgi-plugin-python%{python3_pkgversion}
@@ -840,6 +844,7 @@ Requires: uwsgi-plugin-common = %{version}-%{release}
 %description -n uwsgi-plugin-ssi
 This package contains the ssi plugin for uWSGI
 
+%if %{with python2}
 %package -n uwsgi-plugin-python2-tornado
 Summary:  uWSGI - Plugin for Tornado (Python 2) support
 Requires: uwsgi-plugin-common = %{version}-%{release}, python-tornado
@@ -847,6 +852,7 @@ Obsoletes: uwsgi-plugin-tornado < 2.0.16-4
 
 %description -n uwsgi-plugin-python2-tornado
 This package contains the tornado (Python 2) plugin for uWSGI
+%endif
 
 %if %{with python3}
 %package -n uwsgi-plugin-python%{python3_pkgversion}-tornado
@@ -1127,6 +1133,11 @@ sed -in "s/mono, //" buildconf/fedora.ini
 
 %build
 CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --build fedora.ini
+%if %{with python2}
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/python fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/gevent fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/tornado fedora
+%endif
 %if %{with python3}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/python fedora python%{python3_pkgversion}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_pkgversion}_gevent
@@ -1214,11 +1225,11 @@ echo "https://github.com/unbit/%{docrepo}/tree/%{commit}" >> README.Fedora
 install -D -p -m 0755 uwsgi %{buildroot}%{_sbindir}/uwsgi
 install -p -m 0644 *.h %{buildroot}%{_includedir}/uwsgi
 install -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/uwsgi
-%if 0%{?fedora} < 30
+%if %{with python2}
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python2_sitelib}/uwsgidecorators.py
-%endif
 %if %{manual_py_compile} == 1
 %py_byte_compile %{__python2} %{buildroot}%{python2_sitelib}/uwsgidecorators.py
+%endif
 %endif
 %if %{with python3}
 install -D -p -m 0644 uwsgidecorators.py %{buildroot}%{python3_sitelib}/uwsgidecorators.py
@@ -1333,7 +1344,7 @@ fi
 %{_includedir}/uwsgi
 %{_usrsrc}/uwsgi
 
-%if 0%{?fedora} < 30
+%if %{with python2}
 %files -n python2-uwsgidecorators
 %{python2_sitelib}/uwsgidecorators.py*
 %endif
@@ -1496,8 +1507,10 @@ fi
 %files -n uwsgi-plugin-geoip
 %{_libdir}/uwsgi/geoip_plugin.so
 
+%if %{with python2}
 %files -n uwsgi-plugin-python2-gevent
 %{_libdir}/uwsgi/gevent_plugin.so
+%endif
 
 %if %{with python3}
 %files -n uwsgi-plugin-python%{python3_pkgversion}-gevent
@@ -1571,8 +1584,10 @@ fi
 %files -n uwsgi-plugin-pty
 %{_libdir}/uwsgi/pty_plugin.so
 
+%if %{with python2}
 %files -n uwsgi-plugin-python2
 %{_libdir}/uwsgi/python_plugin.so
+%endif
 
 %if %{with python3}
 %files -n uwsgi-plugin-python%{python3_pkgversion}
@@ -1615,8 +1630,10 @@ fi
 %files -n uwsgi-plugin-ssi
 %{_libdir}/uwsgi/ssi_plugin.so
 
+%if %{with python2}
 %files -n uwsgi-plugin-python2-tornado
 %{_libdir}/uwsgi/tornado_plugin.so
+%endif
 
 %if %{with python3}
 %files -n uwsgi-plugin-python%{python3_pkgversion}-tornado
@@ -1724,6 +1741,7 @@ fi
 * Wed Jun 19 2019 Carl George <carl@george.computer> - 2.0.18-1
 - Latest upstream
 - Use openssl everywhere, instead of compat-openssl10 on F26+
+- Disable python2 subpackages on F31+
 
 * Fri May 31 2019 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.17.1-12
 - Perl 5.30 rebuild
