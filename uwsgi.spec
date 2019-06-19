@@ -583,12 +583,14 @@ Requires: uwsgi-plugin-common = %{version}-%{release}, uwsgi-plugin-rack = %{ver
 %description -n uwsgi-plugin-fiber
 This package contains the fiber plugin for uWSGI
 
+%if %{with go}
 %package -n uwsgi-plugin-gccgo
 Summary:  uWSGI - Plugin for GoLang support
 Requires: uwsgi-plugin-common = %{version}-%{release}
 
 %description -n uwsgi-plugin-gccgo
 This package contains the gccgo plugin for uWSGI
+%endif
 
 %package -n uwsgi-plugin-geoip
 Summary:  uWSGI - Plugin for GeoIP support
