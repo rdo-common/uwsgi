@@ -168,11 +168,7 @@ BuildRequires:  glusterfs-devel, glusterfs-api-devel
 %endif
 BuildRequires:  lua-devel, ruby, pcre-devel
 BuildRequires:  php-devel, php-embedded, libedit-devel, krb5-devel
-%if 0%{?fedora} >= 26
-BuildRequires:  compat-openssl10-devel
-%else
 BuildRequires:  openssl-devel
-%endif
 BuildRequires:  bzip2-devel, gmp-devel, pam-devel
 BuildRequires:  sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, libcurl-devel
@@ -1727,6 +1723,7 @@ fi
 %changelog
 * Wed Jun 19 2019 Carl George <carl@george.computer> - 2.0.18-1
 - Latest upstream
+- Use openssl everywhere, instead of compat-openssl10 on F26+
 
 * Fri May 31 2019 Jitka Plesnikova <jplesnik@redhat.com> - 2.0.17.1-12
 - Perl 5.30 rebuild
