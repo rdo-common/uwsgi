@@ -745,7 +745,7 @@ This package contains the PHP plugin for uWSGI
 
 %package -n uwsgi-plugin-pty
 Summary:  uWSGI - Plugin for PTY support
-Requires: python2, uwsgi-plugin-common = %{version}-%{release}
+Requires: uwsgi-plugin-common = %{version}-%{release}
 
 %description -n uwsgi-plugin-pty
 This package contains the pty plugin for uWSGI
