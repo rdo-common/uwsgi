@@ -116,7 +116,7 @@
 
 Name:           uwsgi
 Version:        2.0.18
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Fast, self-healing, application container server
 # uwsgi is licensed under GPLv2 with a linking exception
 # docs are licensed under MIT
@@ -1740,6 +1740,9 @@ fi
 
 
 %changelog
+* Sat Jul 27 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.18-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Wed Jun 19 2019 Carl George <carl@george.computer> - 2.0.18-1
 - Latest upstream
 - Use openssl everywhere, instead of compat-openssl10 on F26+
