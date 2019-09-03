@@ -114,6 +114,21 @@
 %bcond_without tcp_wrappers
 %endif
 
+# Set %%__python to the newest possible version
+%if %{with python3}
+%global __python %{__python3}
+%else
+%if %{with python3_other}
+%global __python %{__python3_other}
+%else
+%if %{with python2}
+%global __python %{__python2}
+%else
+%global __python /usr/bin/true
+%endif
+%endif
+%endif
+
 Name:           uwsgi
 Version:        2.0.18
 Release:        3%{?dist}
@@ -1132,9 +1147,13 @@ sed -in "s/gridfs, //" buildconf/fedora.ini
 sed -in "s/mono, //" buildconf/fedora.ini
 %endif
 
+%if %{with perl} && (%{with python3} || %{with python3_other})
+%{__python} -m lib2to3 --write --nobackups plugins/coroae/uwsgiplugin.py
+%endif
+
 
 %build
-CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --build fedora.ini
+CFLAGS="%{optflags} -Wno-error -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --build fedora.ini
 %if %{with python2}
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/python fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/gevent fedora
@@ -1150,55 +1169,55 @@ CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig
 CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3_other} uwsgiconfig.py --plugin plugins/gevent fedora python%{python3_other_pkgversion}_gevent
 %endif
 %if %{with mongodblibs}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mongodblog fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/mongodblog fedora
 CFLAGS="%{optflags} -Wno-unused-but-set-variable -std=gnu++11 -Wno-error" %{__python2} uwsgiconfig.py --plugin plugins/stats_pusher_mongodb fedora
 %endif
 %if %{with mono}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mono fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/mono fedora
 %endif
 %if %{with v8}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/v8 fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/v8 fedora
 %endif
 %if %{with go}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/gccgo fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/gccgo fedora
 %endif
 %if %{with ruby19}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/fiber fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/rbthreads fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/fiber fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/rbthreads fedora
 %endif
 %if %{with systemd}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/systemd_logger fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/systemd_logger fedora
 %endif
 %if %{with tuntap}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/tuntap fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/tuntap fedora
 %endif
 %if %{with perl}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/psgi fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/coroae fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/psgi fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/coroae fedora
 %endif
 %if %{with zeromq}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/logzmq fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/mongrel2 fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/logzmq fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/mongrel2 fedora
 %endif
 %if %{with python2_greenlet}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/greenlet fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/greenlet fedora
 %endif
 %if %{with python3}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python3} uwsgiconfig.py --plugin plugins/greenlet fedora python%{python3_pkgversion}_greenlet
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/greenlet fedora python%{python3_pkgversion}_greenlet
 %endif
 %if %{with glusterfs}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/glusterfs fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/glusterfs fedora
 %endif
 %if %{with gridfs}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/gridfs fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/gridfs fedora
 %endif
 %if %{with java}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/jvm fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/jwsgi fedora
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/ring fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/jvm fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/jwsgi fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/ring fedora
 %endif
 %if %{with tcp_wrappers}
-CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python2} uwsgiconfig.py --plugin plugins/router_access fedora
+CFLAGS="%{optflags} -Wno-unused-but-set-variable" %{__python} uwsgiconfig.py --plugin plugins/router_access fedora
 %endif
 %if %{with mod_proxy_uwsgi}
 %{_httpd_apxs} -Wc,-Wall -Wl -c apache2/mod_proxy_uwsgi.c
