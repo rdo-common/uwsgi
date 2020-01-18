@@ -131,7 +131,7 @@
 
 Name:           uwsgi
 Version:        2.0.18
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Fast, self-healing, application container server
 # uwsgi is licensed under GPLv2 with a linking exception
 # docs are licensed under MIT
@@ -1759,6 +1759,9 @@ fi
 
 
 %changelog
+* Sat Jan 18 2020 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.0.18-4
+- F-32: rebuild against ruby27
+
 * Mon Aug 19 2019 Miro Hrončok <mhroncok@redhat.com> - 2.0.18-3
 - Rebuilt for Python 3.8
 
