@@ -101,6 +101,41 @@
 %bcond_with gridfs
 %endif
 
+
+# Conditionally enable/disable some things in centos8/RDO
+%if 0%{?rhel} == 8
+# el8 does have systemd
+%bcond_without systemd
+# python3 only
+%bcond_with python2
+%bcond_without python3
+# zeromq isn not needed
+%bcond_with zeromq
+# centos8 does not have perl-PSGI
+%bcond_with perl
+# centos8 httpd does not include mod_proxy_uwsgi
+%bcond_without mod_proxy_uwsgi
+# centos8 can now build glusterfs but only on x86_64
+%ifnarch x86_64
+%bcond_with glusterfs
+%else
+%bcond_without glusterfs
+%endif
+# For RDO we don't want to rebuild unneded plugins which requires packages not
+# found in CentOS or RDO dependencies as alarm-xmpp, perl-psgi, rack and ring.
+# gloox is needed for xmpp and it is not in CentOS/RDO
+%bcond_with xmpp
+# rubygem-rack is needed for rack and it is not in CentOS/RDO
+%bcond_with rack
+# clojure is needed for ring plugin and is not in CentOS/RDO
+%bcond_with java
+# tcp_wrappers is deprecated in centos8
+%bcond_with tcp_wrappers
+# GeoIP has been removed in EL8
+%bcond_with geoip
+%endif
+
+
 # Turn off byte compilation so it doesn't try
 # to auto-optimize the code in /usr/src/uwsgi
 %if %{manual_py_compile} == 1
@@ -108,7 +143,7 @@
 %endif
 
 # Disable router_access in fedora >= 28 because tcp_wrappers deprecation
-%if 0%{?fedora} >= 28
+%if 0%{?fedora} >= 28 || 0%{?rhel} > 7
 %bcond_with tcp_wrappers
 %else
 %bcond_without tcp_wrappers
@@ -185,8 +220,8 @@ BuildRequires:  openssl-devel
 BuildRequires:  bzip2-devel, gmp-devel, pam-devel
 BuildRequires:  sqlite-devel, libcap-devel
 BuildRequires:  httpd-devel, libcurl-devel
-BuildRequires:  gloox-devel, libstdc++-devel
-BuildRequires:  GeoIP-devel, libevent-devel, zlib-devel
+BuildRequires:  libstdc++-devel
+BuildRequires:  libevent-devel, zlib-devel
 BuildRequires:  openldap-devel, boost-devel
 BuildRequires:  libattr-devel, libxslt-devel
 %if %{with perl}
@@ -362,12 +397,15 @@ Requires: uwsgi-plugin-common = %{version}-%{release}, libcurl
 %description -n uwsgi-alarm-curl
 This package contains the alarm_curl alarm plugin for uWSGI
 
+%if %{with xmpp}
 %package -n uwsgi-alarm-xmpp
 Summary:  uWSGI - Curl alarm plugin
 Requires: uwsgi-plugin-common = %{version}-%{release}, gloox
+BuildRequires:  gloox-devel
 
 %description -n uwsgi-alarm-xmpp
 This package contains the alarm_xmpp alarm plugin for uWSGI
+%endif
 
 # Transformations
 
@@ -607,12 +645,15 @@ Requires: uwsgi-plugin-common = %{version}-%{release}
 This package contains the gccgo plugin for uWSGI
 %endif
 
+%if %{with geoip}
 %package -n uwsgi-plugin-geoip
 Summary:  uWSGI - Plugin for GeoIP support
 Requires: uwsgi-plugin-common = %{version}-%{release}, GeoIP
+BuildRequires:  GeoIP-devel
 
 %description -n uwsgi-plugin-geoip
 This package contains the geoip plugin for uWSGI
+%endif
 
 %if %{with python2}
 %package -n uwsgi-plugin-python2-gevent
@@ -1146,6 +1187,15 @@ sed -in "s/gridfs, //" buildconf/fedora.ini
 %if %{without mono}
 sed -in "s/mono, //" buildconf/fedora.ini
 %endif
+%if %{without xmpp}
+sed -in "s/.*alarm_xmpp,//" buildconf/fedora.ini
+%endif
+%if %{without rack}
+sed -in "s/.*rack,//" buildconf/fedora.ini
+%endif
+%if %{without geoip}
+sed -in "s/.*geoip,//" buildconf/fedora.ini
+%endif
 
 %if %{with perl} && (%{with python3} || %{with python3_other})
 %{__python} -m lib2to3 --write --nobackups plugins/coroae/uwsgiplugin.py
@@ -1414,8 +1464,10 @@ fi
 %files -n uwsgi-alarm-curl
 %{_libdir}/uwsgi/alarm_curl_plugin.so
 
+%if %{with xmpp}
 %files -n uwsgi-alarm-xmpp
 %{_libdir}/uwsgi/alarm_xmpp_plugin.so
+%endif
 
 # Transformations
 
@@ -1525,8 +1577,10 @@ fi
 %{_libdir}/uwsgi/gccgo_plugin.so
 %endif
 
+%if %{with geoip}
 %files -n uwsgi-plugin-geoip
 %{_libdir}/uwsgi/geoip_plugin.so
+%endif
 
 %if %{with python2}
 %files -n uwsgi-plugin-python2-gevent
@@ -1620,8 +1674,10 @@ fi
 %{_libdir}/uwsgi/python%{python3_other_pkgversion}_plugin.so
 %endif
 
+%if %{with rack}
 %files -n uwsgi-plugin-rack
 %{_libdir}/uwsgi/rack_plugin.so
+%endif
 
 %if %{with ruby19}
 %files -n uwsgi-plugin-rbthreads
